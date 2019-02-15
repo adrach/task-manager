@@ -1,5 +1,5 @@
 {
-  "name": "starter-postgres-rails-react",
+  "name": "task-manager",
   "version": "1.0.4",
   "private": true,
   "scripts": {

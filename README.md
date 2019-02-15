@@ -1,5 +1,5 @@
-# [starter-postgres-rails-react]
-# Starter Full-Stack Project: Postgres + Rails + React (PRR)
+# [Task Manager]
+# Forked off the [Starter Full-Stack Project: Postgres + Rails + React (PRR)] (https://github.com/adrach/starter-postgres-rails-react).
 
 ## Overview
 

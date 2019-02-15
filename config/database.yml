@@ -7,12 +7,12 @@ default: &default
 
 development:
   <<: *default
-  database: starter-postgres-rails-react-dev
+  database: task-manager-dev
 
 test:
   <<: *default
-  database: starter-postgres-rails-react-test
+  database: task-manager-test
 
 production:
   <<: *default
-  database: starter-postgres-rails-react
+  database: task-manager
