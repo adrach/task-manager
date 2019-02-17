@@ -13,37 +13,43 @@ class TasksContainer extends React.Component {
 
   render() {
     return (
-      <div className="container">
-        {/* <div className="row">
-          <div className="col">Column 1</div>
-          <div className="col">Column 2</div>
-          <div className="col">Column 3</div>
-          <div className="col">Column 4</div>
-          <div className="col">Column 5</div>
-        </div> */}
+      <div className="m-5">
         <div className="row">
           <div className="d-flex flex-wrap w-100">
-            <div className="card card-body w-20">
-            Column 1
-            </div>
-            <div className="card card-body w-20">
-            Column 2
-            </div>
-            <div className="card card-body w-20">
-            Column 3
-            </div>
-            <div className="card card-body w-20">
-            Column 4
-            </div>
-            <div className="card card-body w-20">
-            Column 5
-            </div>
-            <div className="card card-body w-20">
-            Column 6
-            </div>
-            <div className="card card-body w-20">
-            Column 7
-            </div>
+            {/* stub array */}
+            {[...Array(8)].map((e, i) => (
+              <div className="card card-body custom-w-20 custom-column-body">
+                {/* row title + toggle */}
+                <div className="row custom-space-between">
+                  <div className="w-75 custom-field">
+                    {`Title-${i + 1}`}
+                  </div>
+                  <div className="float-right">
+                    <button
+                      className="navbar-toggler navbar-light"
+                      type="button"
+                      data-toggle="collapse"
+                      data-target="#Content"
+                      aria-controls="Content"
+                      aria-expanded="false"
+                      aria-label="Toggle navigation"
+                      onClick={() => window.console.log(`click on item #${i + 1}`)}
+                    >
+                      <span className="navbar-toggler-icon" />
+                    </button>
+                  </div>
+                </div>
+                {/* Entry */}
+                <div className="custom-field custom-entry row">
+                  Entry
+                </div>
+                {/* Backlog */}
+                <div className="custom-field custom-backlog row">
+                  Backlog
+                </div>
+              </div>
+            ))}
+
           </div>
         </div>
       </div>
