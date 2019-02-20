@@ -1,5 +1,5 @@
 class ProjectController < ApplicationController
-    def index
-        @msg = "Hello from react-rails!"
-    end
+  def index
+    @projects = Project.all.includes(:tasks).includes(:actions)
+  end
 end

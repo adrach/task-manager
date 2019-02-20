@@ -23,6 +23,10 @@ const api = {
     update: (data, id) => put(`/api/post/${id}`, data),
     destroy: id => destroy(`/api/post/${id}`),
   },
+  projects: {
+    get: () => get('api/project'),
+    create: data => post('/api/project', data),
+  },
 };
 
 export default api;

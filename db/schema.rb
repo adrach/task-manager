@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_18_083420) do
+ActiveRecord::Schema.define(version: 2019_02_20_093906) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -39,7 +39,7 @@ ActiveRecord::Schema.define(version: 2019_02_18_083420) do
   end
 
   create_table "actions", force: :cascade do |t|
-    t.string "name"
+    t.string "name", null: false
     t.string "url"
     t.integer "order"
     t.boolean "is_link", default: true
@@ -50,7 +50,7 @@ ActiveRecord::Schema.define(version: 2019_02_18_083420) do
   end
 
   create_table "projects", force: :cascade do |t|
-    t.string "title"
+    t.string "title", null: false
     t.integer "order"
     t.bigint "user_id"
     t.datetime "created_at", null: false
@@ -59,7 +59,7 @@ ActiveRecord::Schema.define(version: 2019_02_18_083420) do
   end
 
   create_table "tasks", force: :cascade do |t|
-    t.string "name"
+    t.string "name", null: false
     t.integer "order"
     t.boolean "is_backlog", default: false
     t.datetime "created_at", null: false

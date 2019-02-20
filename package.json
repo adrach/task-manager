@@ -1,6 +1,6 @@
 {
   "name": "task-manager",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "private": true,
   "scripts": {
     "lint": "eslint --ext .jsx,.js ./app/javascript/**/*",
