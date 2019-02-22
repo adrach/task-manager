@@ -1,6 +1,6 @@
 {
   "name": "task-manager",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "private": true,
   "scripts": {
     "lint": "eslint --ext .jsx,.js ./app/javascript/**/*",
@@ -16,6 +16,7 @@
     "prop-types": "^15.6.2",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
+    "react-edit-inline2": "^1.0.2",
     "react_ujs": "^2.4.4"
   },
   "devDependencies": {
@@ -25,7 +26,7 @@
     "eslint-plugin-jsx-a11y": "^6.1.2",
     "eslint-plugin-react": "^7.11.1",
     "husky": "^1.1.4",
-    "webpack-dev-server": "2.11.2"
+    "webpack-dev-server": "^3.1.14"
   },
   "husky": {
     "hooks": {

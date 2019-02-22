@@ -1,4 +1,4 @@
-class Api::BaseController < ActionController::Base
+class Api::BaseController < ApplicationController
   respond_to :json
 
   private

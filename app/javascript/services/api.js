@@ -27,6 +27,10 @@ const api = {
     get: () => get('api/project'),
     create: data => post('/api/project', data),
   },
+  tasks: {
+    create: data => post('/api/task', data),
+    update: (data, id) => put(`/api/task/${id}`, data),
+  },
 };
 
 export default api;

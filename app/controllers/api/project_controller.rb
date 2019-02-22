@@ -6,7 +6,8 @@ class Api::ProjectController < Api::BaseController
   end
 
   def create
-    @project = Project.create(project_params)
+    @canvas = Project.create(project_params)
+    @project = jbuilder('jbuilder/projects/_project', { project: @canvas })
     render json: @project
   end
 

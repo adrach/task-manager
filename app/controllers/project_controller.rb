@@ -1,5 +1,11 @@
 class ProjectController < ApplicationController
+
   def index
-    @projects = Project.all.includes(:tasks).includes(:actions)
+    @canvas = Project.all.includes(:tasks).includes(:actions)
+    @projects = jbuilder('jbuilder/projects/_projects', { projects: @canvas })
+
+    respond_to do |format|
+      format.html
+    end
   end
 end
