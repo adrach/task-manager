@@ -1,18 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import InlineEdit from 'react-edit-inline2';
 
-import ProjectModal from '../../modals/ProjectsModal';
+import ProjectPopUp from './ProjectPopUp';
+import TasksContainer from '../tasks/TasksContainer';
 import api from '../../services/api';
+import callEvent from '../../services/events';
+import { DISPLAY_PROJECT_MODAL } from '../../constants';
 
 class ProjectsContainer extends React.Component {
   constructor(props) {
     super(props);
 
     this.handleAddProject = this.handleAddProject.bind(this);
+    this.handleProjectDestroy = this.handleProjectDestroy.bind(this);
     this.validateTaskText = this.validateTaskText.bind(this);
     this.handleTaskChange = this.handleTaskChange.bind(this);
     this.handleTaskCreate = this.handleTaskCreate.bind(this);
+    this.callProjectModal = this.callProjectModal.bind(this);
+    this.handleActionDestroy = this.handleActionDestroy.bind(this);
     this.state = {
       projects: props.projects,
     };
@@ -23,18 +28,28 @@ class ProjectsContainer extends React.Component {
     window.console.log(projects);
   }
 
-  handleAddProject(e) {
-    e.preventDefault();
+  // Projects
+  handleAddProject(field) {
     const { projects } = this.state;
-    const field = e.target[0];
     api.projects.create({ [field.name]: field.value })
       .then((res) => {
         this.setState({ projects: [res, ...projects] });
-        $('#projectsModal').modal('toggle');
       })
       .catch(err => window.console.log(err));
   }
 
+  handleProjectDestroy(id) {
+    const { projects } = this.state;
+    api.projects.destroy(id)
+      .then((res) => {
+        this.setState({
+          projects: projects.filter(p => p.id !== res.id),
+        });
+      })
+      .catch(err => window.console.log(err));
+  }
+
+  // Tasks
   validateTaskText(text) {
     return (text.length > 0 && text.length < 64);
   }
@@ -68,17 +83,25 @@ class ProjectsContainer extends React.Component {
       .catch(err => window.console.log(err));
   }
 
+  // Actions
+  handleActionDestroy() {
+
+  }
+
+  // Other
+  callProjectModal() {
+    callEvent(DISPLAY_PROJECT_MODAL, { handleSubmit: this.handleAddProject });
+  }
+
   render() {
     const { projects } = this.state;
     return (
       <div id="projects-main-container">
-        <ProjectModal handleSubmit={this.handleAddProject} />
         <div className="add-project-btn">
           <button
             type="button"
             className="btn btn-primary"
-            data-toggle="modal"
-            data-target="#projectsModal"
+            onClick={() => this.callProjectModal()}
           >
             Add New +
           </button>
@@ -86,58 +109,25 @@ class ProjectsContainer extends React.Component {
         <div className="m-5">
           <div className="row">
             <div className="d-flex flex-wrap w-100">
-
-              {/* Projects */}
+              {/* Projects array */}
               {projects.map(project => (
                 <div key={project.id} className="card card-body custom-w-20 custom-column-body">
-                  {/* Row title + toggle */}
-                  <div className="row custom-space-between">
-                    <div className="w-75 custom-field">
-                      {project.title}
-                    </div>
-                    <div className="float-right">
-                      <button
-                        className="navbar-toggler navbar-light"
-                        type="button"
-                        data-toggle="collapse"
-                        data-target="#Content"
-                        aria-controls="Content"
-                        aria-expanded="false"
-                        aria-label="Toggle navigation"
-                        onClick={() => window.console.log('click on collapse')}
-                      >
-                        <span className="navbar-toggler-icon" />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Entry */}
-                  <div className="custom-field custom-entry">
-                    {/* Tasks */}
-                    {project.tasks.map(task => (
-                      <div key={task.id}>
-                        <InlineEdit
-                          text={task.name}
-                          paramName="name"
-                          validate={this.validateTaskText}
-                          change={data => this.handleTaskChange(data, task.id)}
-                        />
-                      </div>
-                    ))}
-                    <div id={`newTask-${project.id}`}>
-                      <InlineEdit
-                        text=""
-                        placeholder="Add new task ..."
-                        paramName="name"
-                        validate={this.validateTaskText}
-                        change={data => this.handleTaskCreate(data, project.id)}
-                      />
-                    </div>
-                  </div>
-                  {/* Backlog */}
-                  <div className="custom-field custom-backlog row">
-                    Backlog
-                  </div>
+                  {/* Row title + toggle & popup window with Actions */}
+                  <ProjectPopUp
+                    projectId={project.id}
+                    projectTitle={project.title}
+                    actions={project.actions}
+                    handleProjectDestroy={this.handleProjectDestroy}
+                    handleActionDestroy={this.handleActionDestroy}
+                  />
+                  {/* Tasks */}
+                  <TasksContainer
+                    tasks={project.tasks}
+                    projectId={project.id}
+                    handleTaskChange={this.handleTaskChange}
+                    handleTaskCreate={this.handleTaskCreate}
+                    validateTaskText={this.validateTaskText}
+                  />
                 </div>
               ))}
 

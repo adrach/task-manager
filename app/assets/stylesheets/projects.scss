@@ -1,3 +1,5 @@
+$small-width: '700px';
+
 .App {
     text-align: center;
   }
@@ -29,13 +31,19 @@
 
 #projects-main-container{
   .custom-w-20 {
-    -webkit-box-flex: 0;
-    box-flex: 0;
-    -ms-flex: 0 0 20% !important;
-    flex: 0 0 20% !important;
-    max-width: calc(20% - 15px);
+    @media screen and (min-width: $small-width) {
+      -webkit-box-flex: 0;
+      box-flex: 0;
+      -ms-flex: 0 0 20% !important;
+      flex: 0 0 20% !important;
+      max-width: calc(20% - 15px);
+    }
     margin-right: 15px;
     margin-bottom: 15px;
+  }
+
+  .w-85 {
+    width: 85%;
   }
   
   .custom-space-between {
@@ -43,7 +51,7 @@
   }
   
   .d-flex > .custom-column-body {
-    background-color: #e6ffff;
+    background-color: #eff0ff;
     padding-bottom: 0;
   
     .custom-field {
@@ -52,15 +60,20 @@
       padding: 10px;
     }
   
-    .navbar-toggler {
-      display: inline-block;
-      span {
-        width: 1em;
-        height: 1em;
+    .toggler-container {
+      display: flex;
+      margin-right: 3px;
+      .navbar-toggler {
+        display: inline-block;
+        padding: 0;
+        span {
+          width: 1em;
+          height: 1em;
+        }
       }
-    }
-    .navbar-toggler:focus {
-      outline: 0;
+      .navbar-toggler:focus {
+        outline: 0;
+      }
     }
   
     .custom-entry {
@@ -75,7 +88,7 @@
         cursor: text;
 
         input, span {
-          background-color: #e6ffff;
+          background-color: #eff0ff;
           width: 100%;
           border: 0;
           outline: 0;
@@ -89,6 +102,9 @@
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
+        }
+        input {
+          outline: 1px solid;
         }
       }
     }
@@ -104,5 +120,71 @@
     margin-top: 1rem;
     display: flex;
     justify-content: flex-end;
+  }
+
+  .actions-popup {
+    background-color: #e6f0ff;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 60%;
+    height: fit-content;
+    padding-bottom: 20px;
+    margin: 1px;
+
+    .close-popup {
+      margin: 4px;
+      width: 14px;
+      height: 14px;
+      cursor: pointer;
+      margin-left: auto;
+      display: flex;
+    }
+    
+    .title-popup {
+      margin-top: 10px;
+      margin-bottom: 10px;
+      padding-left: 5px;
+      display: flex;
+    }
+
+    .edit-links {
+      cursor: pointer;
+      margin-right: 10px;
+    }
+
+    .link-item-popup {
+      padding-left: 5px;
+      margin-top: 3px;
+      display: flex;
+      a {
+        color: unset;
+        max-width: 60%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-decoration: none;
+        text-overflow: ellipsis;
+        display: inline-block;
+      }
+      &:hover {
+        background-color: #ccccff;
+        transition: .3s linear;
+      }
+    }
+
+    .add-links {
+      margin-top: 10px;
+      padding-left: 5px;
+      cursor: pointer;
+    }
+
+    .project-delete-btn {
+      display: flex;
+      margin: 0 auto;
+      margin-top: 10px;
+      i {
+        margin-right: 5px;
+      }
+    }
   }
 }

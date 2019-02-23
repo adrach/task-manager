@@ -1,4 +1,5 @@
 class Api::TaskController < Api::BaseController
+  before_action :set_task, only: [:update]
 
   def create
     @task = Task.create(task_params)
@@ -6,14 +7,19 @@ class Api::TaskController < Api::BaseController
   end
 
   def update
-    @task = Task.update(params[:id], task_params)
+    @task.update!(task_params)
     render json: @task
   end
+
 
   private
 
   def task_params
     params.permit(:name, :project_id)
+  end
+
+  def set_task
+    @task = Task.find_by_id(params[:id])
   end
 end
   

@@ -1,4 +1,5 @@
 class Api::ProjectController < Api::BaseController
+  before_action :set_project, only: [:destroy]
 
   def index
     @projects = Project.all.includes(:tasks).includes(:actions)
@@ -11,10 +12,20 @@ class Api::ProjectController < Api::BaseController
     render json: @project
   end
 
+  def destroy
+    @project.destroy!
+    render json: @project
+  end
+
+
   private
 
   def project_params
     params.permit(:title)
+  end
+
+  def set_project
+    @project = Project.find_by_id(params[:id])
   end
 end
   

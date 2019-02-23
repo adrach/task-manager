@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 
-const ProjectsModal = ({ handleSubmit }) => (
+const ProjectModal = ({ handleSubmit }) => (
   <div
     className="modal fade"
     id="projectsModal"
@@ -61,8 +61,8 @@ const ProjectsModal = ({ handleSubmit }) => (
   </div>
 );
 
-ProjectsModal.propTypes = {
+ProjectModal.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
 };
 
-export default ProjectsModal;
+export default ProjectModal;

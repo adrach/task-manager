@@ -2,10 +2,28 @@
   display: flex;
   background-repeat: no-repeat;
 
-  // &.icon-edit {
-  //   background-image: image_url('edit.svg');
-  //   width: 20px;
-  //   height: 20px;
-  //   background-size: 20px;
-  // }
+  &.icon-edit-links {
+    background-image: image_url('edit-notes.svg');
+    width: 20px;
+    height: 20px;
+    background-size: 20px;
+  }
+  &.icon-close-popup {
+    background-image: image_url('close.svg');
+    width: 14px;
+    height: 14px;
+    background-size: 14px;
+  }
+  &.icon-delete {
+    background-image: image_url('delete.svg');
+    width: 14px;
+    height: 14px;
+    background-size: 14px;
+  }
+  &.icon-add-circle {
+    background-image: image_url('add-circle.svg');
+    width: 20px;
+    height: 20px;
+    background-size: 20px;
+  }
 }
