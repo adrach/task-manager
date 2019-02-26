@@ -27,7 +27,7 @@ class TasksContainer extends React.Component {
   render() {
     const { tasks } = this.state;
     const {
-      projectId, handleTaskChange, handleTaskCreate, validateTaskText,
+      projectId, handleTaskUpdate, handleTaskCreate, validateInlineInputText,
     } = this.props;
     return (
       <div>
@@ -38,8 +38,8 @@ class TasksContainer extends React.Component {
               <InlineEdit
                 text={task.name}
                 paramName="name"
-                validate={validateTaskText}
-                change={data => handleTaskChange(data, task.id)}
+                validate={validateInlineInputText}
+                change={data => handleTaskUpdate(data, task.id)}
               />
             </div>
           ))}
@@ -48,7 +48,7 @@ class TasksContainer extends React.Component {
               text=""
               placeholder="Add new task ..."
               paramName="name"
-              validate={validateTaskText}
+              validate={validateInlineInputText}
               change={data => handleTaskCreate(data, projectId)}
             />
           </div>
@@ -65,9 +65,9 @@ class TasksContainer extends React.Component {
 TasksContainer.propTypes = {
   tasks: PropTypes.instanceOf(Array),
   projectId: PropTypes.number.isRequired,
-  handleTaskChange: PropTypes.func.isRequired,
+  handleTaskUpdate: PropTypes.func.isRequired,
   handleTaskCreate: PropTypes.func.isRequired,
-  validateTaskText: PropTypes.func.isRequired,
+  validateInlineInputText: PropTypes.func.isRequired,
 };
 
 TasksContainer.defaultProps = {

@@ -1,5 +1,5 @@
 class Api::ProjectController < Api::BaseController
-  before_action :set_project, only: [:destroy]
+  before_action :set_project, only: [:update, :destroy]
 
   def index
     @projects = Project.all.includes(:tasks).includes(:actions)
@@ -9,6 +9,11 @@ class Api::ProjectController < Api::BaseController
   def create
     @canvas = Project.create(project_params)
     @project = jbuilder('jbuilder/projects/_project', { project: @canvas })
+    render json: @project
+  end
+
+  def update
+    @project.update!(project_params)
     render json: @project
   end
 

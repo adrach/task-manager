@@ -11,13 +11,17 @@ class ProjectsContainer extends React.Component {
   constructor(props) {
     super(props);
 
-    this.handleAddProject = this.handleAddProject.bind(this);
+    this.handleProjectCreate = this.handleProjectCreate.bind(this);
+    this.handleProjectUpdate = this.handleProjectUpdate.bind(this);
     this.handleProjectDestroy = this.handleProjectDestroy.bind(this);
-    this.validateTaskText = this.validateTaskText.bind(this);
-    this.handleTaskChange = this.handleTaskChange.bind(this);
     this.handleTaskCreate = this.handleTaskCreate.bind(this);
-    this.callProjectModal = this.callProjectModal.bind(this);
+    this.handleTaskUpdate = this.handleTaskUpdate.bind(this);
+    this.handleTaskDestroy = this.handleTaskDestroy.bind(this);
+    this.handleActionCreate = this.handleActionCreate.bind(this);
+    this.handleActionUpdate = this.handleActionUpdate.bind(this);
     this.handleActionDestroy = this.handleActionDestroy.bind(this);
+    this.validateInlineInputText = this.validateInlineInputText.bind(this);
+    this.callProjectModal = this.callProjectModal.bind(this);
     this.state = {
       projects: props.projects,
     };
@@ -29,11 +33,23 @@ class ProjectsContainer extends React.Component {
   }
 
   // Projects
-  handleAddProject(field) {
+  handleProjectCreate(field) {
     const { projects } = this.state;
     api.projects.create({ [field.name]: field.value })
       .then((res) => {
         this.setState({ projects: [res, ...projects] });
+      })
+      .catch(err => window.console.log(err));
+  }
+
+  handleProjectUpdate(data, projectId) {
+    const { projects } = this.state;
+    api.projects.update(data, projectId)
+      .then((res) => {
+        this.setState({
+          projects: projects.map(p => (p.id === res.id
+            ? Object.assign({}, p, { title: res.title }) : p)),
+        });
       })
       .catch(err => window.console.log(err));
   }
@@ -50,24 +66,6 @@ class ProjectsContainer extends React.Component {
   }
 
   // Tasks
-  validateTaskText(text) {
-    return (text.length > 0 && text.length < 64);
-  }
-
-  handleTaskChange(data, taskId) {
-    const { projects } = this.state;
-    const parsedData = data;
-    api.tasks.update(parsedData, taskId)
-      .then((res) => {
-        this.setState({
-          projects: projects.map(p => Object.assign({}, p, {
-            tasks: p.tasks.map(t => (t.id === taskId ? res : t)),
-          })),
-        });
-      })
-      .catch(err => window.console.log(err));
-  }
-
   handleTaskCreate(data, projectId) {
     const { projects } = this.state;
     const parsedData = data;
@@ -83,14 +81,71 @@ class ProjectsContainer extends React.Component {
       .catch(err => window.console.log(err));
   }
 
-  // Actions
-  handleActionDestroy() {
+  handleTaskUpdate(data, taskId) {
+    const { projects } = this.state;
+    api.tasks.update(data, taskId)
+      .then((res) => {
+        this.setState({
+          projects: projects.map(p => Object.assign({}, p, {
+            tasks: p.tasks.map(t => (t.id === taskId ? res : t)),
+          })),
+        });
+      })
+      .catch(err => window.console.log(err));
+  }
 
+  handleTaskDestroy() {
+    console.log('task destroy');
+  }
+
+  // Actions
+  handleActionCreate(data, projectId) {
+    const { projects } = this.state;
+    const parsedData = data;
+    parsedData.project_id = projectId;
+    api.actions.create(parsedData)
+      .then((res) => {
+        this.setState({
+          projects: projects.map(p => (p.id === projectId
+            ? Object.assign({}, p, { actions: p.actions ? [res, ...p.actions] : [res] }) : p)),
+        });
+      })
+      .catch(err => window.console.log(err));
+  }
+
+  handleActionUpdate(data, actionId) {
+    const { projects } = this.state;
+    api.actions.update(data, actionId)
+      .then((res) => {
+        this.setState({
+          projects: projects.map(p => Object.assign({}, p, {
+            actions: p.actions.map(a => (a.id === actionId ? res : a)),
+          })),
+        });
+      })
+      .catch(err => window.console.log(err));
+  }
+
+  handleActionDestroy(actionId) {
+    const { projects } = this.state;
+    api.actions.destroy(actionId)
+      .then((res) => {
+        this.setState({
+          projects: projects.map(p => Object.assign({}, p, {
+            actions: p.actions.filter(a => a.id !== res.id),
+          })),
+        });
+      })
+      .catch(err => window.console.log(err));
   }
 
   // Other
+  validateInlineInputText(text) {
+    return (text.length > 0 && text.length < 64);
+  }
+
   callProjectModal() {
-    callEvent(DISPLAY_PROJECT_MODAL, { handleSubmit: this.handleAddProject });
+    callEvent(DISPLAY_PROJECT_MODAL, { handleSubmit: this.handleProjectCreate });
   }
 
   render() {
@@ -119,14 +174,18 @@ class ProjectsContainer extends React.Component {
                     actions={project.actions}
                     handleProjectDestroy={this.handleProjectDestroy}
                     handleActionDestroy={this.handleActionDestroy}
+                    handleProjectUpdate={this.handleProjectUpdate}
+                    validateInlineInputText={this.validateInlineInputText}
+                    handleActionCreate={this.handleActionCreate}
+                    handleActionUpdate={this.handleActionUpdate}
                   />
                   {/* Tasks */}
                   <TasksContainer
                     tasks={project.tasks}
                     projectId={project.id}
-                    handleTaskChange={this.handleTaskChange}
+                    handleTaskUpdate={this.handleTaskUpdate}
                     handleTaskCreate={this.handleTaskCreate}
-                    validateTaskText={this.validateTaskText}
+                    validateInlineInputText={this.validateInlineInputText}
                   />
                 </div>
               ))}

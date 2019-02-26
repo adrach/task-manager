@@ -1,5 +1,5 @@
 class Api::TaskController < Api::BaseController
-  before_action :set_task, only: [:update]
+  before_action :set_task, only: [:update, :destroy]
 
   def create
     @task = Task.create(task_params)
@@ -8,6 +8,11 @@ class Api::TaskController < Api::BaseController
 
   def update
     @task.update!(task_params)
+    render json: @task
+  end
+
+  def destroy
+    @task.destroy!
     render json: @task
   end
 

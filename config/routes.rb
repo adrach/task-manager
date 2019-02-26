@@ -4,8 +4,9 @@ Rails.application.routes.draw do
 
   namespace :api, defaults: { format: :json } do
     resources :post, only: [:index, :create, :show, :update, :destroy]
-    resources :project, only: [:index, :create, :destroy]
-    resources :task, only: [:create, :update]
+    resources :project, only: [:index, :create, :update, :destroy]
+    resources :task, only: [:create, :update, :destroy]
+    resources :action, only: [:create, :update, :destroy]
   end
   root 'project#index'
 end

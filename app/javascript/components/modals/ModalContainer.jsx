@@ -3,8 +3,10 @@ import EventBus from 'eventbusjs';
 
 import ProjectModal from './ProjectModal';
 import ConfirmationModal from './ConfirmationModal';
+import ActionModal from './ActionModal';
 import {
-  DISPLAY_PROJECT_MODAL, DISPLAY_CONFIRMATION_MODAL, MODAL_TRANSITION_DURATION,
+  MODAL_TRANSITION_DURATION, DISPLAY_PROJECT_MODAL, DISPLAY_CONFIRMATION_MODAL,
+  DISPLAY_ACTION_MODAL,
 } from '../../constants';
 
 
@@ -16,10 +18,13 @@ class ModalContainer extends React.Component {
     this.processCloseProjectModal = this.processCloseProjectModal.bind(this);
     this.displayConfirmationModal = this.displayConfirmationModal.bind(this);
     this.processCloseConfirmationModal = this.processCloseConfirmationModal.bind(this);
+    this.displayActionModal = this.displayActionModal.bind(this);
+    this.processCloseActionModal = this.processCloseActionModal.bind(this);
     this.modalToggle = this.modalToggle.bind(this);
     this.state = {
       shouldRenderProjectModal: false,
       shouldRenderConfirmationModal: false,
+      shouldRenderActionModal: false,
     };
   }
 
@@ -35,6 +40,11 @@ class ModalContainer extends React.Component {
       this.displayConfirmationModal,
       this,
     );
+    EventBus.addEventListener(
+      DISPLAY_ACTION_MODAL,
+      this.displayActionModal,
+      this,
+    );
   }
 
   componentWillUnmount() {
@@ -48,6 +58,11 @@ class ModalContainer extends React.Component {
       this.displayConfirmationModal,
       this,
     );
+    EventBus.removeEventListener(
+      DISPLAY_ACTION_MODAL,
+      this.displayActionModal,
+      this,
+    );
   }
 
   // Display
@@ -55,7 +70,7 @@ class ModalContainer extends React.Component {
     this.setState({
       handleSubmit: data.handleSubmit,
       shouldRenderProjectModal: true,
-    }, () => this.modalToggle('#projectsModal'));
+    }, () => this.modalToggle('#projectModal'));
   }
 
   displayConfirmationModal(target, data) {
@@ -67,12 +82,20 @@ class ModalContainer extends React.Component {
     }, () => this.modalToggle('#confirmationModal'));
   }
 
+  displayActionModal(target, data) {
+    this.setState({
+      handleSubmit: data.handleSubmit,
+      additionalData: data.additionalData,
+      shouldRenderActionModal: true,
+    }, () => this.modalToggle('#actionModal'));
+  }
+
   // After close action
   processCloseProjectModal(e) {
     e.preventDefault();
     const { handleSubmit } = this.state;
     const field = e.target[0];
-    this.modalToggle('#projectsModal');
+    this.modalToggle('#projectModal');
     handleSubmit(field);
     setTimeout(() => {
       this.setState({
@@ -88,6 +111,23 @@ class ModalContainer extends React.Component {
     setTimeout(() => {
       this.setState({
         shouldRenderConfirmationModal: false,
+        additionalData: {},
+      });
+    }, MODAL_TRANSITION_DURATION);
+  }
+
+  processCloseActionModal(e, data) {
+    e.preventDefault();
+    const { handleSubmit } = this.state;
+    this.modalToggle('#actionModal');
+    handleSubmit({
+      name: e.target.name.value,
+      url: e.target.url.value,
+    }, data);
+    setTimeout(() => {
+      this.setState({
+        shouldRenderActionModal: false,
+        additionalData: {},
       });
     }, MODAL_TRANSITION_DURATION);
   }
@@ -99,7 +139,7 @@ class ModalContainer extends React.Component {
 
   render() {
     const {
-      shouldRenderProjectModal, shouldRenderConfirmationModal,
+      shouldRenderProjectModal, shouldRenderConfirmationModal, shouldRenderActionModal,
       additionalData, question,
     } = this.state;
 
@@ -114,6 +154,12 @@ class ModalContainer extends React.Component {
           <ConfirmationModal
             handleSubmit={this.processCloseConfirmationModal}
             question={question}
+            additionalData={additionalData}
+          />
+        )}
+        {shouldRenderActionModal && (
+          <ActionModal
+            handleSubmit={this.processCloseActionModal}
             additionalData={additionalData}
           />
         )}

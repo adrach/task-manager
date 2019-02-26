@@ -26,4 +26,16 @@
     height: 20px;
     background-size: 20px;
   }
+  &.icon-edit {
+    background-image: image_url('edit.svg');
+    width: 20px;
+    height: 20px;
+    background-size: 20px;
+  }
+  &.icon-close {
+    background-image: image_url('close.svg');
+    width: 20px;
+    height: 20px;
+    background-size: 20px;
+  }
 }
