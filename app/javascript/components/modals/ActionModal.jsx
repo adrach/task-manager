@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 
-const ProjectModal = ({ handleSubmit, additionalData }) => (
+const ProjectModal = ({ handleSubmit, handleReject, additionalData }) => (
   <div
     className="modal fade"
     id="actionModal"
@@ -14,7 +14,9 @@ const ProjectModal = ({ handleSubmit, additionalData }) => (
     <div className="modal-dialog" role="document">
       <div className="modal-content">
         <div className="modal-header">
-          <h5 className="modal-title" id="actionModalLabel">Add Action</h5>
+          <h5 className="modal-title" id="actionModalLabel">
+            {additionalData.type === 'create' ? 'Add Action' : 'Edit Action'}
+          </h5>
           <button
             type="button"
             className="close"
@@ -60,6 +62,7 @@ const ProjectModal = ({ handleSubmit, additionalData }) => (
               type="button"
               className="btn btn-secondary"
               data-dismiss="modal"
+              onClick={handleReject}
             >
               {'Close'}
             </button>
@@ -78,6 +81,7 @@ const ProjectModal = ({ handleSubmit, additionalData }) => (
 
 ProjectModal.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
+  handleReject: PropTypes.func.isRequired,
   additionalData: PropTypes.instanceOf(Object),
 };
 

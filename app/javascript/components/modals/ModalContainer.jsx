@@ -9,6 +9,13 @@ import {
   DISPLAY_ACTION_MODAL,
 } from '../../constants';
 
+const defaultState = {
+  shouldRenderProjectModal: false,
+  shouldRenderConfirmationModal: false,
+  shouldRenderActionModal: false,
+  question: '',
+  additionalData: {},
+};
 
 class ModalContainer extends React.Component {
   constructor(props) {
@@ -21,11 +28,8 @@ class ModalContainer extends React.Component {
     this.displayActionModal = this.displayActionModal.bind(this);
     this.processCloseActionModal = this.processCloseActionModal.bind(this);
     this.modalToggle = this.modalToggle.bind(this);
-    this.state = {
-      shouldRenderProjectModal: false,
-      shouldRenderConfirmationModal: false,
-      shouldRenderActionModal: false,
-    };
+    this.stateToDefault = this.stateToDefault.bind(this);
+    this.state = defaultState;
   }
 
   // Did Mount
@@ -97,23 +101,14 @@ class ModalContainer extends React.Component {
     const field = e.target[0];
     this.modalToggle('#projectModal');
     handleSubmit(field);
-    setTimeout(() => {
-      this.setState({
-        shouldRenderProjectModal: false,
-      });
-    }, MODAL_TRANSITION_DURATION);
+    this.stateToDefault();
   }
 
   processCloseConfirmationModal(data) {
     const { handleSubmit } = this.state;
     this.modalToggle('#confirmationModal');
     handleSubmit(data);
-    setTimeout(() => {
-      this.setState({
-        shouldRenderConfirmationModal: false,
-        additionalData: {},
-      });
-    }, MODAL_TRANSITION_DURATION);
+    this.stateToDefault();
   }
 
   processCloseActionModal(e, data) {
@@ -124,17 +119,18 @@ class ModalContainer extends React.Component {
       name: e.target.name.value,
       url: e.target.url.value,
     }, data);
-    setTimeout(() => {
-      this.setState({
-        shouldRenderActionModal: false,
-        additionalData: {},
-      });
-    }, MODAL_TRANSITION_DURATION);
+    this.stateToDefault();
   }
 
   // other functions
   modalToggle(id) {
     $(id).modal('toggle');
+  }
+
+  stateToDefault() {
+    setTimeout(() => {
+      this.setState(defaultState);
+    }, MODAL_TRANSITION_DURATION);
   }
 
   render() {
@@ -148,11 +144,13 @@ class ModalContainer extends React.Component {
         {shouldRenderProjectModal && (
           <ProjectModal
             handleSubmit={this.processCloseProjectModal}
+            handleReject={this.stateToDefault}
           />
         )}
         {shouldRenderConfirmationModal && (
           <ConfirmationModal
             handleSubmit={this.processCloseConfirmationModal}
+            handleReject={this.stateToDefault}
             question={question}
             additionalData={additionalData}
           />
@@ -160,6 +158,7 @@ class ModalContainer extends React.Component {
         {shouldRenderActionModal && (
           <ActionModal
             handleSubmit={this.processCloseActionModal}
+            handleReject={this.stateToDefault}
             additionalData={additionalData}
           />
         )}

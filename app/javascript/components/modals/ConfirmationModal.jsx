@@ -2,7 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 
-const ConfirmationModal = ({ handleSubmit, question, additionalData }) => (
+const ConfirmationModal = ({
+  handleSubmit, handleReject, question, additionalData,
+}) => (
   <div
     className="modal fade"
     id="confirmationModal"
@@ -32,6 +34,7 @@ const ConfirmationModal = ({ handleSubmit, question, additionalData }) => (
             type="button"
             className="btn btn-secondary"
             data-dismiss="modal"
+            onClick={handleReject}
           >
             {'Cancel'}
           </button>
@@ -51,6 +54,7 @@ const ConfirmationModal = ({ handleSubmit, question, additionalData }) => (
 
 ConfirmationModal.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
+  handleReject: PropTypes.func.isRequired,
   question: PropTypes.string.isRequired,
   additionalData: PropTypes.instanceOf(Object),
 };
