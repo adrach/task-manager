@@ -100,10 +100,15 @@ $project-containers: #A9A9A9;
       margin-right: -15px;
       margin-left: -15px;
 
-      div {
+      &>div {
         display: flex;
         margin-top: 10px;
-        cursor: text;
+        cursor: pointer;
+
+        &>div {
+          display: inherit;
+          width: 100%;
+        }
 
         input, span {
           background-color: #eff0ff;
@@ -123,6 +128,24 @@ $project-containers: #A9A9A9;
         }
         input {
           outline: 1px solid;
+        }
+        .react-contextmenu {
+          display: block;
+          padding: 5px;
+          // For Button
+          // .context-menu-delete-btn {
+          //   display: flex;
+          //   margin: 0 auto;
+          //   i {
+          //     margin-right: 5px;
+          //   }
+          // }
+          .react-contextmenu-item {
+            display: flex;
+            &>span {
+              text-align: center;
+            }
+          }
         }
       }
     }

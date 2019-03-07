@@ -32,6 +32,7 @@ const api = {
   tasks: {
     create: data => post('/api/task', data),
     update: (data, id) => put(`/api/task/${id}`, data),
+    destroy: id => destroy(`/api/task/${id}`),
   },
   actions: {
     create: data => post('/api/action', data),

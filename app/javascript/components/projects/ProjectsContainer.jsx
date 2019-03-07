@@ -94,8 +94,17 @@ class ProjectsContainer extends React.Component {
       .catch(err => window.console.log(err));
   }
 
-  handleTaskDestroy() {
-    console.log('task destroy');
+  handleTaskDestroy(taskId) {
+    const { projects } = this.state;
+    api.tasks.destroy(taskId)
+      .then((res) => {
+        this.setState({
+          projects: projects.map(p => Object.assign({}, p, {
+            tasks: p.tasks.filter(t => t.id !== res.id),
+          })),
+        });
+      })
+      .catch(err => window.console.log(err));
   }
 
   // Actions
@@ -185,6 +194,7 @@ class ProjectsContainer extends React.Component {
                     projectId={project.id}
                     handleTaskUpdate={this.handleTaskUpdate}
                     handleTaskCreate={this.handleTaskCreate}
+                    handleTaskDestroy={this.handleTaskDestroy}
                     validateInlineInputText={this.validateInlineInputText}
                   />
                 </div>
