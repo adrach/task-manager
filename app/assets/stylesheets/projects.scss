@@ -94,13 +94,21 @@ $project-containers: #A9A9A9;
       }
     }
   
-    .custom-entry {
+    .tasks-container,
+    .custom-backlog {
       margin-top: 10px;
       min-height: 300px;
       margin-right: -15px;
       margin-left: -15px;
 
-      &>div {
+      &.dragging-over {
+        border: 1px solid;
+        transition: background-color .5s linear;
+        background-color: rgba(46, 35, 35, 0.568);
+      }
+
+      div.task-items,
+      div.task-create {
         display: flex;
         margin-top: 10px;
         cursor: pointer;
@@ -108,6 +116,7 @@ $project-containers: #A9A9A9;
         &>div {
           display: inherit;
           width: 100%;
+          overflow: hidden;
         }
 
         input, span {
@@ -132,20 +141,29 @@ $project-containers: #A9A9A9;
         .react-contextmenu {
           display: block;
           padding: 5px;
-          // For Button
-          // .context-menu-delete-btn {
-          //   display: flex;
-          //   margin: 0 auto;
-          //   i {
-          //     margin-right: 5px;
-          //   }
-          // }
           .react-contextmenu-item {
             display: flex;
             &>span {
               text-align: center;
             }
           }
+        }
+        .item-draggable {
+          display: flex;
+          width: fit-content;
+          align-items: center;
+          cursor: move;
+          margin-left: -10px;
+        }
+        .item-dragging {
+          outline: 2px solid;
+          opacity: .7;
+        }
+      }
+
+      div.task-create {
+        span, input {
+          margin-left: 10px;
         }
       }
     }
@@ -245,4 +263,7 @@ $project-containers: #A9A9A9;
       }
     }
   }
+}
+.test {
+  overflow: hidden;
 }

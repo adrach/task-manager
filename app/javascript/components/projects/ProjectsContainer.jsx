@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { DragDropContext } from 'react-beautiful-dnd';
 
 import ProjectPopUp from './ProjectPopUp';
 import TasksContainer from '../tasks/TasksContainer';
@@ -22,14 +23,68 @@ class ProjectsContainer extends React.Component {
     this.handleActionDestroy = this.handleActionDestroy.bind(this);
     this.validateInlineInputText = this.validateInlineInputText.bind(this);
     this.callProjectModal = this.callProjectModal.bind(this);
+    this.onTaskDragStart = this.onTaskDragStart.bind(this);
+    this.onTaskDragEnd = this.onTaskDragEnd.bind(this);
+    this.toggleUnnecessaryTaskDragData = this.toggleUnnecessaryTaskDragData.bind(this);
     this.state = {
       projects: props.projects,
     };
   }
 
+  // base
   componentDidMount() {
     const { projects } = this.state;
     window.console.log(projects);
+  }
+
+  // Drag&Drop
+  onTaskDragStart() {
+    this.toggleUnnecessaryTaskDragData();
+  }
+
+  onTaskDragEnd(data) {
+    const { destination, source, draggableId } = data;
+    const { projects } = this.state;
+    this.toggleUnnecessaryTaskDragData();
+
+    if (
+      !destination
+      || (source.index === destination.index && source.droppableId === destination.droppableId)
+    ) return;
+
+    const parsedDroppableId = parseInt(source.droppableId, 10);
+    const parsedDraggableId = parseInt(draggableId, 10);
+    const project = projects.find(p => p.id === parsedDroppableId);
+    const newTaskIds = Array.from(project.tasks.sort((a, b) => a.order - b.order).map(t => t.id));
+    const isBacklog = destination.droppableId === `${parsedDroppableId}-backlog`;
+    newTaskIds.splice(source.index, 1);
+    newTaskIds.splice(isBacklog && source.droppableId !== `${parsedDroppableId}-backlog`
+      ? destination.index + project.tasks.filter(t => !t.is_backlog).length - 1
+      : destination.index, 0, parsedDraggableId);
+
+    api.tasks.updateOrder({
+      ids: newTaskIds,
+      draggable: {
+        id: parsedDraggableId,
+        is_backlog: isBacklog,
+      },
+    })
+      .then(() => {
+        this.setState({
+          projects: projects.map(p => (p.id === parsedDroppableId ? Object.assign({}, p, {
+            tasks: p.tasks.map(t => Object.assign({}, t, {
+              order: newTaskIds.indexOf(t.id),
+              is_backlog: t.id === parsedDraggableId ? isBacklog : t.is_backlog,
+            })),
+          }) : p)),
+        });
+      })
+      .catch(err => window.console.log(err));
+  }
+
+  toggleUnnecessaryTaskDragData() {
+    $('.task-create').toggle(100);
+    $('.actions-popup').toggle(100);
   }
 
   // Projects
@@ -157,6 +212,7 @@ class ProjectsContainer extends React.Component {
     callEvent(DISPLAY_PROJECT_MODAL, { handleSubmit: this.handleProjectCreate });
   }
 
+
   render() {
     const { projects } = this.state;
     return (
@@ -175,31 +231,37 @@ class ProjectsContainer extends React.Component {
             <div className="d-flex flex-wrap w-100">
               {/* Projects array */}
               {projects.map(project => (
-                <div key={project.id} className="card card-body custom-w-20 custom-column-body">
-                  {/* Row title + toggle & popup window with Actions */}
-                  <ProjectPopUp
-                    projectId={project.id}
-                    projectTitle={project.title}
-                    actions={project.actions}
-                    handleProjectDestroy={this.handleProjectDestroy}
-                    handleActionDestroy={this.handleActionDestroy}
-                    handleProjectUpdate={this.handleProjectUpdate}
-                    validateInlineInputText={this.validateInlineInputText}
-                    handleActionCreate={this.handleActionCreate}
-                    handleActionUpdate={this.handleActionUpdate}
-                  />
-                  {/* Tasks */}
-                  <TasksContainer
-                    tasks={project.tasks}
-                    projectId={project.id}
-                    handleTaskUpdate={this.handleTaskUpdate}
-                    handleTaskCreate={this.handleTaskCreate}
-                    handleTaskDestroy={this.handleTaskDestroy}
-                    validateInlineInputText={this.validateInlineInputText}
-                  />
-                </div>
+                // Drag&Drop init
+                <DragDropContext
+                  onDragStart={this.onTaskDragStart}
+                  onDragEnd={this.onTaskDragEnd}
+                  key={project.id}
+                >
+                  <div className="card card-body custom-w-20 custom-column-body">
+                    {/* Row title + toggle & popup window with Actions */}
+                    <ProjectPopUp
+                      projectId={project.id}
+                      projectTitle={project.title}
+                      actions={project.actions}
+                      handleProjectDestroy={this.handleProjectDestroy}
+                      handleActionDestroy={this.handleActionDestroy}
+                      handleProjectUpdate={this.handleProjectUpdate}
+                      validateInlineInputText={this.validateInlineInputText}
+                      handleActionCreate={this.handleActionCreate}
+                      handleActionUpdate={this.handleActionUpdate}
+                    />
+                    {/* Tasks */}
+                    <TasksContainer
+                      tasks={project.tasks}
+                      projectId={project.id}
+                      handleTaskUpdate={this.handleTaskUpdate}
+                      handleTaskCreate={this.handleTaskCreate}
+                      handleTaskDestroy={this.handleTaskDestroy}
+                      validateInlineInputText={this.validateInlineInputText}
+                    />
+                  </div>
+                </DragDropContext>
               ))}
-
             </div>
           </div>
         </div>

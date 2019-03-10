@@ -33,6 +33,7 @@ const api = {
     create: data => post('/api/task', data),
     update: (data, id) => put(`/api/task/${id}`, data),
     destroy: id => destroy(`/api/task/${id}`),
+    updateOrder: data => post('api/task/update_order', data),
   },
   actions: {
     create: data => post('/api/action', data),

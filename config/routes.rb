@@ -7,6 +7,7 @@ Rails.application.routes.draw do
     resources :project, only: [:index, :create, :update, :destroy]
     resources :task, only: [:create, :update, :destroy]
     resources :action, only: [:create, :update, :destroy]
+    post 'task/update_order', to: 'task#update_order'
   end
   root 'project#index'
 end
