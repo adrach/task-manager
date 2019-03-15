@@ -47,8 +47,10 @@ $project-containers: #A9A9A9;
   .w-85 {
     width: 85%;
   }
-  
+
   .project-title {
+    cursor: text;
+
     span, input {
       background-color: unset;
       width: 70%;
@@ -72,10 +74,40 @@ $project-containers: #A9A9A9;
     background-color: #eff0ff;
     padding-bottom: 0;
   
+    .rubber-band {
+      cursor: grab;
+      margin-top: 15px;
+      display: flex;
+      align-items: center;
+      height: 30px;
+      margin-left: -15px;
+      margin-right: -15px;
+      &.is-dragging {
+        transition: .5s linear;
+        opacity: .9;
+      }
+      &>div {
+        width: 100%;
+        hr {
+          border: 0 none;
+          border-top: 3px dashed #322f32;
+          background: none;
+          height:0;
+          margin: 0;
+        }
+      }
+    }
+
     .custom-field {
       background-color: $project-containers;
       border-radius: 2%;
       padding: 10px;
+    }
+
+    &.project-dragging {
+      transition: .3s linear;
+      outline: 2px solid;
+      opacity: .8;
     }
   
     .toggler-container {
@@ -152,12 +184,13 @@ $project-containers: #A9A9A9;
           display: flex;
           width: fit-content;
           align-items: center;
-          cursor: move;
+          cursor: grab;
           margin-left: -10px;
         }
         .item-dragging {
+          transition: .3s linear;
           outline: 2px solid;
-          opacity: .7;
+          opacity: .8;
         }
       }
 
@@ -169,7 +202,8 @@ $project-containers: #A9A9A9;
     }
   
     .custom-backlog {
-      margin-top: 30px;
+      margin-top: 15px;
+      padding-bottom: 20px;
       min-height: 100px;
     }
   }

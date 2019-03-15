@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { DragDropContext } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 import ProjectPopUp from './ProjectPopUp';
 import TasksContainer from '../tasks/TasksContainer';
@@ -25,7 +25,7 @@ class ProjectsContainer extends React.Component {
     this.callProjectModal = this.callProjectModal.bind(this);
     this.onTaskDragStart = this.onTaskDragStart.bind(this);
     this.onTaskDragEnd = this.onTaskDragEnd.bind(this);
-    this.toggleUnnecessaryTaskDragData = this.toggleUnnecessaryTaskDragData.bind(this);
+    this.toggleUnnecessaryDragData = this.toggleUnnecessaryDragData.bind(this);
     this.state = {
       projects: props.projects,
     };
@@ -38,53 +38,101 @@ class ProjectsContainer extends React.Component {
   }
 
   // Drag&Drop
-  onTaskDragStart() {
-    this.toggleUnnecessaryTaskDragData();
+  onTaskDragStart(data) {
+    const { type } = data;
+    this.toggleUnnecessaryDragData(type);
   }
 
   onTaskDragEnd(data) {
-    const { destination, source, draggableId } = data;
+    const {
+      destination, source, draggableId, type,
+    } = data;
     const { projects } = this.state;
-    this.toggleUnnecessaryTaskDragData();
+    this.toggleUnnecessaryDragData(type);
 
     if (
       !destination
       || (source.index === destination.index && source.droppableId === destination.droppableId)
     ) return;
 
-    const parsedDroppableId = parseInt(source.droppableId, 10);
     const parsedDraggableId = parseInt(draggableId, 10);
-    const project = projects.find(p => p.id === parsedDroppableId);
-    const newTaskIds = Array.from(project.tasks.sort((a, b) => a.order - b.order).map(t => t.id));
-    const isBacklog = destination.droppableId === `${parsedDroppableId}-backlog`;
-    newTaskIds.splice(source.index, 1);
-    newTaskIds.splice(isBacklog && source.droppableId !== `${parsedDroppableId}-backlog`
-      ? destination.index + project.tasks.filter(t => !t.is_backlog).length - 1
-      : destination.index, 0, parsedDraggableId);
+    const sortedProjects = projects.sort((a, b) => a.order - b.order);
+    const parsedDroppableId = parseInt(source.droppableId, 10);
+    const isTargetBacklog = destination.droppableId === `${parsedDroppableId}-backlog`;
 
-    api.tasks.updateOrder({
-      ids: newTaskIds,
-      draggable: {
-        id: parsedDraggableId,
-        is_backlog: isBacklog,
-      },
-    })
-      .then(() => {
-        this.setState({
-          projects: projects.map(p => (p.id === parsedDroppableId ? Object.assign({}, p, {
-            tasks: p.tasks.map(t => Object.assign({}, t, {
-              order: newTaskIds.indexOf(t.id),
-              is_backlog: t.id === parsedDraggableId ? isBacklog : t.is_backlog,
-            })),
-          }) : p)),
-        });
-      })
-      .catch(err => window.console.log(err));
+    // rubber-band
+    if (draggableId === `${parsedDraggableId}-rubber-band`) {
+      const { tasks } = sortedProjects.find(p => p.id === parsedDroppableId);
+      const entry = tasks.filter(t => !t.is_backlog);
+      const backlog = tasks.filter(t => t.is_backlog);
+      let changedTasks = [];
+
+      if (!isTargetBacklog && destination.index < entry.length) {
+        changedTasks = entry.slice(-(entry.length - destination.index));
+      }
+      if (isTargetBacklog && destination.index > 0) {
+        changedTasks = backlog.slice(0, destination.index);
+      }
+      if (!changedTasks.length) return;
+
+      this.setState({
+        projects: projects.map(p => (p.id === parsedDroppableId ? Object.assign({}, p, {
+          tasks: p.tasks.map(t => (changedTasks.indexOf(t) > -1 ? Object.assign({}, t, {
+            is_backlog: !isTargetBacklog,
+          }) : t)),
+        }) : p)),
+      }, () => api.tasks.updateBacklogStatus({
+        ids: changedTasks.map(ct => ct.id),
+        is_backlog: !isTargetBacklog,
+      }).catch(e => window.console.log(e)));
+      return;
+    }
+
+    // projects
+    if (type === 'projects') {
+      const newProjectIds = Array.from(sortedProjects.map(p => p.id));
+      newProjectIds.splice(source.index, 1);
+      newProjectIds.splice(destination.index, 0, parsedDraggableId);
+
+      this.setState({
+        projects: projects.map(p => Object.assign({}, p, {
+          order: newProjectIds.indexOf(p.id),
+        })),
+      }, () => api.projects.updateOrder({ ids: newProjectIds }).catch(e => window.console.log(e)));
+      return;
+    }
+
+    // tasks
+    if (type.startsWith('tasks')) {
+      const project = sortedProjects.find(p => p.id === parsedDroppableId);
+      const newTaskIds = Array.from(project.tasks.sort((a, b) => a.order - b.order).map(t => t.id));
+      newTaskIds.splice(source.index, 1);
+      newTaskIds.splice(isTargetBacklog && source.droppableId !== `${parsedDroppableId}-backlog`
+        ? destination.index + project.tasks.filter(t => !t.is_backlog).length - 1
+        : destination.index, 0, parsedDraggableId);
+
+      this.setState({
+        projects: projects.map(p => (p.id === parsedDroppableId ? Object.assign({}, p, {
+          tasks: p.tasks.map(t => Object.assign({}, t, {
+            order: newTaskIds.indexOf(t.id),
+            is_backlog: t.id === parsedDraggableId ? isTargetBacklog : t.is_backlog,
+          })),
+        }) : p)),
+      }, () => api.tasks.updateOrder({
+        ids: newTaskIds,
+        draggable: {
+          id: parsedDraggableId,
+          is_backlog: isTargetBacklog,
+        },
+      }).catch(e => window.console.log(e)));
+    }
   }
 
-  toggleUnnecessaryTaskDragData() {
-    $('.task-create').toggle(100);
-    $('.actions-popup').toggle(100);
+  toggleUnnecessaryDragData(type) {
+    if (type.startsWith('tasks')) {
+      $('.task-create').toggle(100);
+      $('.actions-popup').toggle(100);
+    }
   }
 
   // Projects
@@ -217,6 +265,7 @@ class ProjectsContainer extends React.Component {
     const { projects } = this.state;
     return (
       <div id="projects-main-container">
+        {/* Add Project Btn */}
         <div className="add-project-btn">
           <button
             type="button"
@@ -226,43 +275,71 @@ class ProjectsContainer extends React.Component {
             Add New +
           </button>
         </div>
+        {/* Row of projcets */}
         <div className="m-5">
           <div className="row">
-            <div className="d-flex flex-wrap w-100">
-              {/* Projects array */}
-              {projects.map(project => (
-                // Drag&Drop init
-                <DragDropContext
-                  onDragStart={this.onTaskDragStart}
-                  onDragEnd={this.onTaskDragEnd}
-                  key={project.id}
-                >
-                  <div className="card card-body custom-w-20 custom-column-body">
-                    {/* Row title + toggle & popup window with Actions */}
-                    <ProjectPopUp
-                      projectId={project.id}
-                      projectTitle={project.title}
-                      actions={project.actions}
-                      handleProjectDestroy={this.handleProjectDestroy}
-                      handleActionDestroy={this.handleActionDestroy}
-                      handleProjectUpdate={this.handleProjectUpdate}
-                      validateInlineInputText={this.validateInlineInputText}
-                      handleActionCreate={this.handleActionCreate}
-                      handleActionUpdate={this.handleActionUpdate}
-                    />
-                    {/* Tasks */}
-                    <TasksContainer
-                      tasks={project.tasks}
-                      projectId={project.id}
-                      handleTaskUpdate={this.handleTaskUpdate}
-                      handleTaskCreate={this.handleTaskCreate}
-                      handleTaskDestroy={this.handleTaskDestroy}
-                      validateInlineInputText={this.validateInlineInputText}
-                    />
+            {/* Drag&Drop init */}
+            <DragDropContext
+              onDragStart={this.onTaskDragStart}
+              onDragEnd={this.onTaskDragEnd}
+            >
+              {/* Droppable zone for projects */}
+              <Droppable
+                droppableId="projects"
+                direction="horizontal"
+                type="projects"
+              >
+                {providedDroppable => (
+                  <div
+                    className="d-flex flex-wrap w-100"
+                    ref={providedDroppable.innerRef}
+                    {...providedDroppable.droppableProps}
+                  >
+                    {/* Projects array */}
+                    {projects.sort((a, b) => a.order - b.order).map((project, index) => (
+                      // Draggable projects
+                      <Draggable
+                        key={project.id}
+                        draggableId={project.id}
+                        index={index}
+                      >
+                        {(providedDraggable, snapshotDraggable) => (
+                          <div
+                            className={`card card-body custom-w-20 custom-column-body ${snapshotDraggable.isDragging ? 'project-dragging' : ''}`}
+                            ref={providedDraggable.innerRef}
+                            {...providedDraggable.draggableProps}
+                            {...providedDraggable.dragHandleProps}
+                          >
+                            {/* Row title + toggle & popup window with Actions */}
+                            <ProjectPopUp
+                              projectId={project.id}
+                              projectTitle={project.title}
+                              actions={project.actions}
+                              handleProjectDestroy={this.handleProjectDestroy}
+                              handleActionDestroy={this.handleActionDestroy}
+                              handleProjectUpdate={this.handleProjectUpdate}
+                              validateInlineInputText={this.validateInlineInputText}
+                              handleActionCreate={this.handleActionCreate}
+                              handleActionUpdate={this.handleActionUpdate}
+                            />
+                            {/* Tasks */}
+                            <TasksContainer
+                              tasks={project.tasks}
+                              projectId={project.id}
+                              handleTaskUpdate={this.handleTaskUpdate}
+                              handleTaskCreate={this.handleTaskCreate}
+                              handleTaskDestroy={this.handleTaskDestroy}
+                              validateInlineInputText={this.validateInlineInputText}
+                            />
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {providedDroppable.placeholder}
                   </div>
-                </DragDropContext>
-              ))}
-            </div>
+                )}
+              </Droppable>
+            </DragDropContext>
           </div>
         </div>
       </div>

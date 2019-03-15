@@ -1,6 +1,6 @@
 class Api::TaskController < Api::BaseController
   before_action :set_task, only: [:update, :destroy]
-  before_action :set_reorder_data, only: [:update_order]
+  before_action :set_reorder_data, only: [:update_order, :update_backlog_status]
 
   def create
     @task = Task.create(task_params)
@@ -26,10 +26,18 @@ class Api::TaskController < Api::BaseController
     render json: :ok
   end
 
+  def update_backlog_status
+    Task.find(@ids).each do |task|
+      task.is_backlog = @is_backlog
+      task.save!
+    end
+    render json: :ok
+  end
+
   private
 
   def task_params
-    params.permit(:name, :project_id, :ids, :draggable)
+    params.permit(:name, :project_id, :ids, :draggable, :is_backlog)
   end
 
   def set_task
@@ -39,6 +47,7 @@ class Api::TaskController < Api::BaseController
   def set_reorder_data
     @ids = params['ids']
     @item = params['draggable']
+    @is_backlog = params['is_backlog']
   end
 end
   

@@ -95,10 +95,12 @@ class TasksContainer extends React.Component {
     return (
       <div>
         {/* Entry, Droppable */}
-        <Droppable droppableId={`${projectId.toString()}-entry`}>
+        <Droppable
+          droppableId={`${projectId.toString()}-entry`}
+          type={`tasks-${projectId}`}
+        >
           {(provided, snapshot) => (
             <div
-              // className="custom-field tasks-container"
               className={`custom-field tasks-container ${snapshot.isDraggingOver ? 'dragging-over' : ''}`}
               ref={provided.innerRef}
               {...provided.droppableProps}
@@ -122,11 +124,47 @@ class TasksContainer extends React.Component {
           )}
         </Droppable>
 
+        {/* Rubber-band, Draggable, Disabled Drop (but we need init with same type) */}
+        <Droppable
+          droppableId={`${projectId.toString()}-rubber-band`}
+          type={`tasks-${projectId}`}
+          isDropDisabled={true}
+        >
+          {provided => (
+            <div
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+            >
+              <Draggable
+                draggableId={`${projectId.toString()}-rubber-band`}
+                index={0}
+              >
+                {(providedDraggable, snapshot) => (
+                  <div
+                    className={`rubber-band ${snapshot.isDragging ? 'is-dragging' : ''}`}
+                    ref={providedDraggable.innerRef}
+                    {...providedDraggable.draggableProps}
+                    {...providedDraggable.dragHandleProps}
+                  >
+                    <div>
+                      <hr />
+                    </div>
+                  </div>
+                )}
+              </Draggable>
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+
+
         {/* Backlog, Droppable */}
-        <Droppable droppableId={`${projectId.toString()}-backlog`}>
+        <Droppable
+          droppableId={`${projectId.toString()}-backlog`}
+          type={`tasks-${projectId}`}
+        >
           {(provided, snapshot) => (
             <div
-              // className="custom-field custom-backlog"
               className={`custom-field custom-backlog ${snapshot.isDraggingOver ? 'dragging-over' : ''}`}
               ref={provided.innerRef}
               {...provided.droppableProps}
