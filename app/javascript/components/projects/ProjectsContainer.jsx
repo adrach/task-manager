@@ -55,7 +55,7 @@ class ProjectsContainer extends React.Component {
       || (source.index === destination.index && source.droppableId === destination.droppableId)
     ) return;
 
-    const parsedDraggableId = parseInt(draggableId, 10);
+    const parsedDraggableId = draggableId.includes('rubber-band') ? parseInt(draggableId, 10) : parseInt(draggableId.split('-').pop(), 10);
     const sortedProjects = projects.sort((a, b) => a.order - b.order);
     const parsedDroppableId = parseInt(source.droppableId, 10);
     const isTargetBacklog = destination.droppableId === `${parsedDroppableId}-backlog`;
@@ -300,7 +300,7 @@ class ProjectsContainer extends React.Component {
                       // Draggable projects
                       <Draggable
                         key={project.id}
-                        draggableId={project.id}
+                        draggableId={`project-${project.id}`}
                         index={index}
                       >
                         {(providedDraggable, snapshotDraggable) => (

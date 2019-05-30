@@ -16,7 +16,6 @@ class Api::ActionController < Api::BaseController
     render json: @action
   end
 
-
   private
 
   def action_params
@@ -27,4 +26,3 @@ class Api::ActionController < Api::BaseController
     @action = Action.find_by_id(params[:id])
   end
 end
-  

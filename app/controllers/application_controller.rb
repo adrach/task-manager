@@ -1,16 +1,13 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
+
+  private
+
   def json_response(object, status = :ok)
     render status: status, json: object
   end
 
-  def jbuilder(j_view, params)
-    JSON.parse(
-      render_to_string(
-        template: j_view,
-        locals: params,
-        formats: [:json]
-      )
-    )
+  def serialize_records(records)
+    ActiveModelSerializers::SerializableResource.new(records.to_a)
   end
 end

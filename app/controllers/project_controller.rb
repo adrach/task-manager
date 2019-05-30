@@ -1,11 +1,13 @@
 class ProjectController < ApplicationController
+  before_action :authenticate_user!
 
   def index
-    @canvas = Project.all.includes(:tasks).includes(:actions)
-    @projects = jbuilder('jbuilder/projects/_projects', { projects: @canvas })
-
-    respond_to do |format|
-      format.html
+    # Bullet eager loading trigger example
+    # Will raise error only in tests, for dev just log msg
+    Project.all.each do |project|
+      p project.user.email
     end
+
+    @projects = serialize_records(Project.all.includes(:tasks).includes(:actions))
   end
 end

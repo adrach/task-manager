@@ -50,4 +50,3 @@ class Api::TaskController < Api::BaseController
     @is_backlog = params['is_backlog']
   end
 end
-  

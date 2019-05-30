@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '2.5.3'
+ruby '2.5.5'
 
 gem 'rails', '~> 5.2.2'
 gem 'pg', '>= 0.18', '< 2.0'
@@ -10,7 +10,6 @@ gem 'sass-rails', '~> 5.0'
 gem 'uglifier', '>= 1.3.0'
 gem "webpacker", "~> 3.5"
 gem "react-rails", "~> 2.4"
-gem 'jbuilder', '~> 2.5'
 gem 'discard', '~> 1.0' # soft-delete
 gem 'rack-cors' # cross domain
 gem 'active_model_serializers' # serializers
@@ -40,6 +39,7 @@ group :development, :test do
   gem 'byebug'
   gem 'rubocop', require: false
   gem 'rubocop-airbnb'
+  gem 'bullet', require: true
 end
 
 group :development do
@@ -48,12 +48,16 @@ group :development do
   gem 'listen', '>= 3.0.5', '< 3.2'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
+  gem 'annotate'
 end
 
 group :test do
   gem 'capybara', '>= 2.15'
   gem 'selenium-webdriver'
   gem 'chromedriver-helper'
+  gem 'rspec-rails'
+  gem 'rspec_junit_formatter'
+  gem 'rails-controller-testing'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

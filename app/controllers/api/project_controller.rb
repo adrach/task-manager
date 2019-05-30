@@ -8,8 +8,7 @@ class Api::ProjectController < Api::BaseController
   end
 
   def create
-    @canvas = Project.create(project_params)
-    @project = jbuilder('jbuilder/projects/_project', { project: @canvas })
+    @project = current_user.projects.create(project_params)
     render json: @project
   end
 
@@ -45,4 +44,3 @@ class Api::ProjectController < Api::BaseController
     @ids = params['ids']
   end
 end
-  

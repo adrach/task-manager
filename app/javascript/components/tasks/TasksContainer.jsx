@@ -44,7 +44,11 @@ class TasksContainer extends React.Component {
     const { validateInlineInputText, handleTaskUpdate } = this.props;
     return (
       // Draggable items
-      <Draggable draggableId={task.id.toString()} index={index} key={task.id}>
+      <Draggable
+        draggableId={`task-${task.id.toString()}`}
+        index={index}
+        key={task.id}
+      >
         {(provided, snapshot) => (
           <div
             ref={provided.innerRef}
