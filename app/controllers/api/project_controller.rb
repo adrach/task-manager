@@ -23,7 +23,7 @@ class Api::ProjectController < Api::BaseController
   end
 
   def update_order
-    Project.find(@ids).each do |project|
+    Project.includes(:user).find(@ids).each do |project|
       project.order = @ids.index(project.id)
       project.save!
     end

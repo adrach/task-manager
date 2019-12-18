@@ -13,6 +13,7 @@ gem "react-rails", "~> 2.4"
 gem 'discard', '~> 1.0' # soft-delete
 gem 'rack-cors' # cross domain
 gem 'active_model_serializers' # serializers
+gem 'rollbar' # rollbar
 gem 'devise'
 gem 'mini_racer', platforms: :ruby
 
