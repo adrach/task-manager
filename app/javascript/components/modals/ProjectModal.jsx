@@ -28,7 +28,7 @@ const ProjectModal = ({ handleSubmit, handleReject }) => (
           <div className="modal-body">
             <div className="form-group">
               <label htmlFor="title">
-                {'Project Title'}
+                Project Title
               </label>
               <input
                 required
@@ -47,13 +47,13 @@ const ProjectModal = ({ handleSubmit, handleReject }) => (
               data-dismiss="modal"
               onClick={handleReject}
             >
-              {'Close'}
+              Close
             </button>
             <button
               type="submit"
               className="btn btn-primary"
             >
-              {'Save'}
+              Save
             </button>
           </div>
         </form>

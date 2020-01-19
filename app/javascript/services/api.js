@@ -16,13 +16,6 @@ const put = (url, data) => apiFetch(url, 'PUT', data);
 const destroy = url => apiFetch(url, 'DELETE');
 
 const api = {
-  posts: {
-    getAll: () => get('api/post'),
-    get: id => get(`api/post/${id}`),
-    create: data => post('/api/post', data),
-    update: (data, id) => put(`/api/post/${id}`, data),
-    destroy: id => destroy(`/api/post/${id}`),
-  },
   projects: {
     get: () => get('api/project'),
     create: data => post('/api/project', data),

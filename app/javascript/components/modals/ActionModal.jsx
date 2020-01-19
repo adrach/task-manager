@@ -30,7 +30,7 @@ const ProjectModal = ({ handleSubmit, handleReject, additionalData }) => (
           <div className="modal-body">
             <div className="form-group">
               <label htmlFor="title">
-                {'Action Name'}
+                Action Name
               </label>
               <input
                 required
@@ -44,7 +44,7 @@ const ProjectModal = ({ handleSubmit, handleReject, additionalData }) => (
             </div>
             <div className="form-group">
               <label htmlFor="title">
-                {'Action Url'}
+                Action Url
               </label>
               <input
                 required
@@ -64,13 +64,13 @@ const ProjectModal = ({ handleSubmit, handleReject, additionalData }) => (
               data-dismiss="modal"
               onClick={handleReject}
             >
-              {'Close'}
+              Close
             </button>
             <button
               type="submit"
               className="btn btn-primary"
             >
-              {'Save'}
+              Save
             </button>
           </div>
         </form>

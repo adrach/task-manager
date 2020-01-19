@@ -87,7 +87,7 @@ class ProjectPopUp extends React.Component {
     return (
       <div className="row custom-space-between">
         {/* Header */}
-        <div className="w-85 custom-field project-title">
+        <div className="project-edit custom-field project-title">
           {/* ProjectTitle with dblClick edit mode */}
           {showProjectTitleInput
             ? (
@@ -151,7 +151,7 @@ class ProjectPopUp extends React.Component {
               <i className="icon icon-close-popup" />
             </div>
             <div className="title-popup custom-space-between">
-              {'Links'}
+              Links
               <div
                 className="edit-links"
                 onClick={() => this.handleEditModeChange(editMode)}
@@ -162,7 +162,7 @@ class ProjectPopUp extends React.Component {
             {/* Links */}
             {!actions.length && (
               <div className="p-1">
-                {'This project has no links ...'}
+                This project has no links ...
               </div>
             )}
             {actions.map(action => (
@@ -229,7 +229,7 @@ class ProjectPopUp extends React.Component {
               )}
             >
               <i className="icon icon-delete" />
-              {'Delete'}
+              Delete project
             </button>
           </div>
         )}

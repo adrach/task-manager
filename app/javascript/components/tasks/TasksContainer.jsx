@@ -5,7 +5,7 @@ import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 import { Draggable, Droppable } from 'react-beautiful-dnd';
 
 import callEvent from '../../services/events';
-import { DISPLAY_CONFIRMATION_MODAL } from '../../constants';
+import { DISPLAY_CONFIRMATION_MODAL, NEW_ENTRY_TEXT } from '../../constants';
 
 class TasksContainer extends React.Component {
   constructor(props) {
@@ -71,7 +71,11 @@ class TasksContainer extends React.Component {
               </ContextMenuTrigger>
               <ContextMenu id={`task-${task.id}`} className="dropdown-menu">
                 <MenuItem className="dropdown-item">
-                  <span
+                  <button
+                    type="button"
+                    className="btn btn-danger btn-sm project-delete-btn"
+                    data-toggle="modal"
+                    data-target="#confirmationModal"
                     onClick={() => this.callConfirmationModal(
                       `Are you sure that you want to destroy task "${task.name}" ?`,
                       {
@@ -80,8 +84,9 @@ class TasksContainer extends React.Component {
                       },
                     )}
                   >
-                    {'Delete'}
-                  </span>
+                    <i className="icon icon-delete" />
+                    Delete entry
+                  </button>
                 </MenuItem>
               </ContextMenu>
             </div>
@@ -109,7 +114,7 @@ class TasksContainer extends React.Component {
               ref={provided.innerRef}
               {...provided.droppableProps}
             >
-              {'Entry'}
+              {/* 'Entry' */}
               {tasks.sort((a, b) => a.order - b.order)
                 .filter(t => !t.is_backlog).map((task, index) => (
                   this.renderTaskItems(task, index)
@@ -117,7 +122,7 @@ class TasksContainer extends React.Component {
               <div className="task-create" id={`newTask-${projectId}`}>
                 <InlineEdit
                   text=""
-                  placeholder="Add new task ..."
+                  placeholder={NEW_ENTRY_TEXT}
                   paramName="name"
                   validate={validateInlineInputText}
                   change={data => handleTaskCreate(data, projectId)}
@@ -150,8 +155,8 @@ class TasksContainer extends React.Component {
                     {...providedDraggable.draggableProps}
                     {...providedDraggable.dragHandleProps}
                   >
-                    <div>
-                      <hr />
+                    <div className="line-container">
+                      <div className="line" />
                     </div>
                   </div>
                 )}
@@ -173,7 +178,7 @@ class TasksContainer extends React.Component {
               ref={provided.innerRef}
               {...provided.droppableProps}
             >
-              {'Backlog'}
+              {/* 'Backlog' */}
               {tasks.sort((a, b) => a.order - b.order)
                 .filter(t => t.is_backlog).map((task, index) => (
                   this.renderTaskItems(task, index + tasks.filter(t => !t.is_backlog).length)

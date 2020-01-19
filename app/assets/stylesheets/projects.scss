@@ -1,10 +1,21 @@
 $small-width: 700px;
-$project-item-bg-color: #C0C0C0;
-$project-containers: #A9A9A9;
+$project-item-bg-color: #fff;
+$project-container: #d5e2f6;
+$backlog-container: #f6e8d5;
+$gray-line: #aaa;
 
 .App {
     text-align: center;
-  }
+    background: #313131;
+    height: 100vh;    
+    .navbar {
+      background-color: #364c63;
+    }
+    p.alert, p.notice {
+      padding: 0;
+      color: white;
+    }
+}
   
 .App-logo {
   animation: App-logo-spin infinite 20s linear;
@@ -36,33 +47,34 @@ $project-containers: #A9A9A9;
     @media screen and (min-width: $small-width) {
       -webkit-box-flex: 0;
       box-flex: 0;
-      -ms-flex: 0 0 20% !important;
       flex: 0 0 20% !important;
-      max-width: calc(20% - 15px);
+      max-width: calc(20% - 1.5rem);
     }
-    margin-right: 15px;
-    margin-bottom: 15px;
+    margin-right: 1.5rem;
+    margin-bottom: 1.5rem;
   }
 
-  .w-85 {
-    width: 85%;
+  .project-edit {
+    width: calc(100% - 1.5rem);
+    input#projectTitleInput {
+      width: 100%;
+      border: 1px solid $gray-line !important;
+      border-radius: 0.5rem !important;
+      outline: none !important;
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+    }
   }
 
   .project-title {
-    cursor: text;
-
-    span, input {
-      background-color: unset;
-      width: 70%;
-      border: 0;
-      outline: 0;
-      padding-left: 5px;
-      padding-right: 5px;
-      padding-top: 0;
-      padding-bottom: 0;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+    text-align: left;
+    background-color: #fff !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 500;
+    span {
+      cursor: text;
     }
   }
 
@@ -71,36 +83,42 @@ $project-containers: #A9A9A9;
   }
   
   .d-flex > .custom-column-body {
-    background-color: #eff0ff;
-    padding-bottom: 0;
+    background-color: #fff;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    .row {
+      margin: 0;
+    }
   
     .rubber-band {
       cursor: grab;
-      margin-top: 15px;
+      margin-top: 5px;
       display: flex;
       align-items: center;
       height: 30px;
-      margin-left: -15px;
-      margin-right: -15px;
       &.is-dragging {
         transition: .5s linear;
         opacity: .9;
       }
-      &>div {
+      & .line-container {
         width: 100%;
-        hr {
-          border: 0 none;
-          border-top: 3px dashed #322f32;
-          background: none;
-          height:0;
-          margin: 0;
+        position: relative;
+        height: 2px;
+        .line {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-image: linear-gradient(to right, transparent 50%, $gray-line 50%);
+          background-size: 25px 100%;
         }
       }
     }
 
     .custom-field {
-      background-color: $project-containers;
-      border-radius: 2%;
+      background-color: $project-container;
+      border-radius: 0.5rem;
       padding: 10px;
     }
 
@@ -112,7 +130,7 @@ $project-containers: #A9A9A9;
   
     .toggler-container {
       display: flex;
-      margin-right: 3px;
+      width: 1.5rem;
       .navbar-toggler {
         display: inline-block;
         padding: 0;
@@ -126,12 +144,28 @@ $project-containers: #A9A9A9;
       }
     }
   
+    .tasks-container {
+      nav.dropdown-menu {
+        .dropdown-item {
+          padding: 0.5rem 1.0rem;
+          button {
+            width: 100%;
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            padding: 0.25rem 1.0rem;
+            i {
+              margin-right: 0.5rem;
+            }
+          }
+        }
+      }
+    }
+
     .tasks-container,
     .custom-backlog {
-      margin-top: 10px;
+      margin-top: 0.75rem;
       min-height: 300px;
-      margin-right: -15px;
-      margin-left: -15px;
 
       &.dragging-over {
         border: 1px solid;
@@ -142,7 +176,7 @@ $project-containers: #A9A9A9;
       div.task-items,
       div.task-create {
         display: flex;
-        margin-top: 10px;
+        margin-top: 0.75rem;
         cursor: pointer;
 
         &>div {
@@ -152,11 +186,12 @@ $project-containers: #A9A9A9;
         }
 
         input, span {
-          background-color: #eff0ff;
+          background-color: #fff;
           width: 100%;
           border: 0;
           outline: 0;
           display: inline-block;
+          border-radius: 0.5rem;
           height: fit-content;
           line-height: 2rem;
           padding-left: 5px;
@@ -166,9 +201,11 @@ $project-containers: #A9A9A9;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
-        }
-        input {
-          outline: 1px solid;
+          text-align: left;
+          outline: none;
+          &:focus {
+            border: 1px solid #000;
+          }
         }
         .react-contextmenu {
           display: block;
@@ -202,17 +239,25 @@ $project-containers: #A9A9A9;
     }
   
     .custom-backlog {
-      margin-top: 15px;
+      margin-top: 5px;
       padding-bottom: 20px;
       min-height: 100px;
+      background-color: $backlog-container;
     }
   }
   
   .add-project-btn {
-    margin: 3rem;
-    margin-top: 1rem;
-    display: flex;
-    justify-content: flex-end;
+    position: absolute;
+    top: 0;
+    margin: 0.5rem;
+    right: 6rem;
+
+    button {
+      background: #f6e8d5;
+      border: none;
+      color: black;
+      font-weight: 500;
+    }
   }
 
   .actions-popup {
@@ -239,10 +284,11 @@ $project-containers: #A9A9A9;
     }
     
     .title-popup {
-      margin-top: 10px;
+      margin-top: 0.75rem;
       margin-bottom: 10px;
       padding-left: 5px;
       display: flex;
+      font-weight: 500;
     }
 
     .edit-links {
@@ -263,7 +309,7 @@ $project-containers: #A9A9A9;
         display: inline-block;
       }
       &:hover {
-        background-color: $project-containers;
+        background-color: $project-container;
         transition: .3s linear;
       }
     }
@@ -271,7 +317,7 @@ $project-containers: #A9A9A9;
     .add-links {
       justify-content: flex-end;
       display: flex;
-      margin-top: 10px;
+      margin-top: 0.75rem;
       margin-right: 10px;
       cursor: pointer;
     }
@@ -279,9 +325,11 @@ $project-containers: #A9A9A9;
     .project-delete-btn {
       display: flex;
       margin: 0 auto;
-      margin-top: 10px;
+      margin-top: 0.75rem;
+      align-items: center;
+      padding: 0.25rem 1.0rem;
       i {
-        margin-right: 5px;
+        margin-right: 0.5rem;
       }
     }
   }
@@ -291,6 +339,7 @@ $project-containers: #A9A9A9;
     justify-content: space-between;
     .item-edit-actions {
       display: inherit;
+      align-items: center;
       &>div {
         margin-left: 5px;
         cursor: pointer;

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_09_193222) do
+ActiveRecord::Schema.define(version: 2020_01_19_044715) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,15 +24,6 @@ ActiveRecord::Schema.define(version: 2019_03_09_193222) do
     t.datetime "updated_at", null: false
     t.bigint "project_id"
     t.index ["project_id"], name: "index_actions_on_project_id"
-  end
-
-  create_table "posts", force: :cascade do |t|
-    t.text "title"
-    t.text "content"
-    t.bigint "user_id"
-    t.datetime "discarded_at"
-    t.index ["discarded_at"], name: "index_posts_on_discarded_at"
-    t.index ["user_id"], name: "index_posts_on_user_id"
   end
 
   create_table "projects", force: :cascade do |t|
@@ -69,7 +60,6 @@ ActiveRecord::Schema.define(version: 2019_03_09_193222) do
   end
 
   add_foreign_key "actions", "projects"
-  add_foreign_key "posts", "users"
   add_foreign_key "projects", "users"
   add_foreign_key "tasks", "projects"
 end

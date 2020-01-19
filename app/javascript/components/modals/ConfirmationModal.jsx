@@ -36,7 +36,7 @@ const ConfirmationModal = ({
             data-dismiss="modal"
             onClick={handleReject}
           >
-            {'Cancel'}
+            Cancel
           </button>
           <button
             type="button"
@@ -44,7 +44,7 @@ const ConfirmationModal = ({
             data-dismiss="modal"
             className="btn btn-danger"
           >
-            {'Delete'}
+            Delete
           </button>
         </div>
       </div>

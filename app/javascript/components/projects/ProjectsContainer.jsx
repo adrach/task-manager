@@ -6,7 +6,7 @@ import ProjectPopUp from './ProjectPopUp';
 import TasksContainer from '../tasks/TasksContainer';
 import api from '../../services/api';
 import callEvent from '../../services/events';
-import { DISPLAY_PROJECT_MODAL } from '../../constants';
+import { DISPLAY_PROJECT_MODAL, NEW_ENTRY_TEXT } from '../../constants';
 
 class ProjectsContainer extends React.Component {
   constructor(props) {
@@ -179,7 +179,7 @@ class ProjectsContainer extends React.Component {
           projects: projects.map(p => (p.id === projectId
             ? Object.assign({}, p, { tasks: p.tasks ? [res, ...p.tasks] : [res] }) : p)),
         });
-        $(`#newTask-${projectId} > span`).html('Add new task ...');
+        $(`#newTask-${projectId} > span`).html(NEW_ENTRY_TEXT);
       })
       .catch(err => window.console.log(err));
   }
@@ -272,11 +272,11 @@ class ProjectsContainer extends React.Component {
             className="btn btn-primary"
             onClick={() => this.callProjectModal()}
           >
-            Add New +
+            New project +
           </button>
         </div>
-        {/* Row of projcets */}
-        <div className="m-5">
+        {/* Row of projects */}
+        <div className="mx-5">
           <div className="row">
             {/* Drag&Drop init */}
             <DragDropContext
