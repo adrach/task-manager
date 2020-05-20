@@ -3,7 +3,10 @@ class Api::TaskController < Api::BaseController
   before_action :set_reorder_data, only: [:update_order, :update_backlog_status]
 
   def create
-    @task = Task.create(task_params)
+    order = Project.find_by_id(params[:project_id]).tasks.where(is_backlog: false).count
+    @task = Task.new(task_params)
+    @task.order = order
+    @task.save!
     render json: @task
   end
 

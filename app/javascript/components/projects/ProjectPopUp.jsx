@@ -26,14 +26,14 @@ class ProjectPopUp extends React.Component {
 
   // base
   componentDidUpdate(prevProps) {
-    const { actions } = this.props;
-    if (actions !== prevProps.actions) {
-      this.onActionsUpdate(actions);
+    const { actions, projectTitle } = this.props;
+    if (actions !== prevProps.actions || projectTitle !== prevProps.projectTitle) {
+      this.onActionsUpdate(actions, projectTitle);
     }
   }
 
-  onActionsUpdate(actions) {
-    this.setState({ actions });
+  onActionsUpdate(actions, projectTitle) {
+    this.setState({ actions, title: projectTitle });
   }
 
   // events

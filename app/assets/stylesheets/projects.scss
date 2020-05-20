@@ -116,12 +116,6 @@ $gray-line: #aaa;
       }
     }
 
-    .custom-field {
-      background-color: $project-container;
-      border-radius: 0.5rem;
-      padding: 10px;
-    }
-
     &.project-dragging {
       transition: .3s linear;
       outline: 2px solid;
@@ -245,20 +239,6 @@ $gray-line: #aaa;
       background-color: $backlog-container;
     }
   }
-  
-  .add-project-btn {
-    position: absolute;
-    top: 0;
-    margin: 0.5rem;
-    right: 6rem;
-
-    button {
-      background: #f6e8d5;
-      border: none;
-      color: black;
-      font-weight: 500;
-    }
-  }
 
   .actions-popup {
     background-color: #e6f0ff;
@@ -347,6 +327,97 @@ $gray-line: #aaa;
     }
   }
 }
+
+.custom-field {
+  background-color: $project-container;
+  border-radius: 0.5rem;
+  padding: 10px;
+}
+
+.nav-project-btns {
+  margin: 0.5rem;
+
+  button {
+    background: #f6e8d5;
+    border: none;
+    color: black;
+    font-weight: 500;
+    margin-right: 1rem;
+  }
+}
+
+nav {
+  margin-bottom: 4rem;
+
+  .navbar-nav {
+    align-items: center;
+  }
+  
+  .nav-user-email {
+    margin: 0 .5rem;
+    color: white;
+  }
+}
+
+.reorder-projects-container {
+  margin: 1rem .5rem;
+  position: relative;
+
+  &.dragging-over {
+    border: 1px solid;
+    transition: background-color .5s linear;
+    background-color: rgba(46, 35, 35, 0.568);
+  }
+
+  div.reorder-projects-item {
+    display: flex;
+    margin-top: 0.75rem;
+    cursor: pointer;
+    left: 1rem !important;
+
+    &>div {
+      display: inherit;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    input, span {
+      background-color: #fff;
+      width: 100%;
+      border: 0;
+      outline: 0;
+      display: inline-block;
+      border-radius: 0.5rem;
+      height: fit-content;
+      line-height: 2rem;
+      padding-left: 5px;
+      padding-right: 5px;
+      padding-top: 2px;
+      padding-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: left;
+      outline: none;
+      &:focus {
+        border: 1px solid #000;
+      }
+    }
+    .item-draggable {
+      display: flex;
+      width: fit-content;
+      align-items: center;
+      cursor: grab;
+      margin-left: -10px;
+    }
+    &.item-dragging span {
+      transition: .3s linear;
+      opacity: .8;
+    }
+  }
+}
+
+
 .test {
   overflow: hidden;
 }

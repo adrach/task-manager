@@ -2,15 +2,17 @@ import React from 'react';
 import EventBus from 'eventbusjs';
 
 import ProjectModal from './ProjectModal';
+import ReorderProjectsModal from './ReorderProjectsModal';
 import ConfirmationModal from './ConfirmationModal';
 import ActionModal from './ActionModal';
 import {
-  MODAL_TRANSITION_DURATION, DISPLAY_PROJECT_MODAL, DISPLAY_CONFIRMATION_MODAL,
-  DISPLAY_ACTION_MODAL,
+  MODAL_TRANSITION_DURATION, DISPLAY_PROJECT_MODAL, DISPLAY_REORDER_PROJECTS_MODAL,
+  DISPLAY_CONFIRMATION_MODAL, DISPLAY_ACTION_MODAL,
 } from '../../constants';
 
 const defaultState = {
   shouldRenderProjectModal: false,
+  shouldRenderReorderProjectsModal: false,
   shouldRenderConfirmationModal: false,
   shouldRenderActionModal: false,
   question: '',
@@ -23,6 +25,8 @@ class ModalContainer extends React.Component {
 
     this.displayProjectModal = this.displayProjectModal.bind(this);
     this.processCloseProjectModal = this.processCloseProjectModal.bind(this);
+    this.displayReorderProjectsModal = this.displayReorderProjectsModal.bind(this);
+    this.processCloseReorderProjectsModal = this.processCloseReorderProjectsModal.bind(this);
     this.displayConfirmationModal = this.displayConfirmationModal.bind(this);
     this.processCloseConfirmationModal = this.processCloseConfirmationModal.bind(this);
     this.displayActionModal = this.displayActionModal.bind(this);
@@ -37,6 +41,11 @@ class ModalContainer extends React.Component {
     EventBus.addEventListener(
       DISPLAY_PROJECT_MODAL,
       this.displayProjectModal,
+      this,
+    );
+    EventBus.addEventListener(
+      DISPLAY_REORDER_PROJECTS_MODAL,
+      this.displayReorderProjectsModal,
       this,
     );
     EventBus.addEventListener(
@@ -58,6 +67,11 @@ class ModalContainer extends React.Component {
       this,
     );
     EventBus.removeEventListener(
+      DISPLAY_REORDER_PROJECTS_MODAL,
+      this.displayReorderProjectsModal,
+      this,
+    );
+    EventBus.removeEventListener(
       DISPLAY_CONFIRMATION_MODAL,
       this.displayConfirmationModal,
       this,
@@ -75,6 +89,15 @@ class ModalContainer extends React.Component {
       handleSubmit: data.handleSubmit,
       shouldRenderProjectModal: true,
     }, () => this.modalToggle('#projectModal'));
+  }
+
+  displayReorderProjectsModal(target, data) {
+    this.setState({
+      projects: data.projects,
+      onDragStart: data.onDragStart,
+      onDragEnd: data.onDragEnd,
+      shouldRenderReorderProjectsModal: true,
+    }, () => this.modalToggle('#reorderProjectsModal'));
   }
 
   displayConfirmationModal(target, data) {
@@ -101,6 +124,12 @@ class ModalContainer extends React.Component {
     const field = e.target[0];
     this.modalToggle('#projectModal');
     handleSubmit(field);
+    this.stateToDefault();
+  }
+
+  processCloseReorderProjectsModal(e) {
+    e.preventDefault();
+    this.modalToggle('#reorderProjectsModal');
     this.stateToDefault();
   }
 
@@ -135,8 +164,9 @@ class ModalContainer extends React.Component {
 
   render() {
     const {
-      shouldRenderProjectModal, shouldRenderConfirmationModal, shouldRenderActionModal,
-      additionalData, question,
+      shouldRenderProjectModal, shouldRenderReorderProjectsModal,
+      shouldRenderConfirmationModal, shouldRenderActionModal,
+      additionalData, question, projects, onDragStart, onDragEnd,
     } = this.state;
 
     return (
@@ -145,6 +175,13 @@ class ModalContainer extends React.Component {
           <ProjectModal
             handleSubmit={this.processCloseProjectModal}
             handleReject={this.stateToDefault}
+          />
+        )}
+        {shouldRenderReorderProjectsModal && (
+          <ReorderProjectsModal
+            projects={projects}
+            onDragStart={onDragStart}
+            onDragEnd={onDragEnd}
           />
         )}
         {shouldRenderConfirmationModal && (

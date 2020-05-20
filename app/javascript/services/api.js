@@ -7,7 +7,7 @@ const apiFetch = (url, method, body) => (
       'Content-Type': 'application/json',
       'X-CSRF-Token': document.querySelector('meta[name=csrf-token]').content,
     },
-  }).then(res => res.json())
+  }).then(res => url.includes('users/') ? res : res.json())
 );
 
 const get = url => apiFetch(url, 'GET');
@@ -16,6 +16,9 @@ const put = (url, data) => apiFetch(url, 'PUT', data);
 const destroy = url => apiFetch(url, 'DELETE');
 
 const api = {
+  auth: {
+    logout: data => destroy('users/sign_out', data),
+  },
   projects: {
     get: () => get('api/project'),
     create: data => post('/api/project', data),

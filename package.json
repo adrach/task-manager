@@ -1,6 +1,6 @@
 {
   "name": "task-manager",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "private": true,
   "scripts": {
     "lint": "eslint --ext .jsx,.js ./app/javascript/**/*",
@@ -10,9 +10,9 @@
     "db:seed": "rails db:seed"
   },
   "dependencies": {
+    "@babel/preset-react": "^7.0.0",
     "@rails/webpacker": "^4.2.2",
     "babel-eslint": "^10.0.1",
-    "@babel/preset-react": "^7.0.0",
     "eventbusjs": "^0.2.0",
     "prop-types": "^15.6.2",
     "react": "^16.7.0",
@@ -28,7 +28,7 @@
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.2",
     "eslint-plugin-react": "^7.11.1",
-    "husky": "^1.1.4",
+    "husky": "^4.2.5",
     "webpack-dev-server": "^3.1.14"
   },
   "husky": {

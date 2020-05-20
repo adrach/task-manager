@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { DragDropContext } from 'react-beautiful-dnd';
 
+import Header from '../nav/Header';
 import ProjectPopUp from './ProjectPopUp';
 import TasksContainer from '../tasks/TasksContainer';
 import api from '../../services/api';
 import callEvent from '../../services/events';
-import { DISPLAY_PROJECT_MODAL, NEW_ENTRY_TEXT } from '../../constants';
+import { DISPLAY_PROJECT_MODAL, DISPLAY_REORDER_PROJECTS_MODAL, NEW_ENTRY_TEXT } from '../../constants';
 
 class ProjectsContainer extends React.Component {
   constructor(props) {
@@ -23,9 +24,11 @@ class ProjectsContainer extends React.Component {
     this.handleActionDestroy = this.handleActionDestroy.bind(this);
     this.validateInlineInputText = this.validateInlineInputText.bind(this);
     this.callProjectModal = this.callProjectModal.bind(this);
+    this.callReorderProjectsModal = this.callReorderProjectsModal.bind(this);
     this.onTaskDragStart = this.onTaskDragStart.bind(this);
     this.onTaskDragEnd = this.onTaskDragEnd.bind(this);
     this.toggleUnnecessaryDragData = this.toggleUnnecessaryDragData.bind(this);
+
     this.state = {
       projects: props.projects,
     };
@@ -253,106 +256,105 @@ class ProjectsContainer extends React.Component {
 
   // Other
   validateInlineInputText(text) {
-    return (text.length > 0 && text.length < 64);
+    return text.length > 0;
+    // return (text.length > 0 && text.length < 64);
   }
 
   callProjectModal() {
     callEvent(DISPLAY_PROJECT_MODAL, { handleSubmit: this.handleProjectCreate });
   }
 
+  callReorderProjectsModal() {
+    const { projects } = this.state;
+
+    callEvent(DISPLAY_REORDER_PROJECTS_MODAL, {
+      projects,
+      onDragStart: this.onTaskDragStart,
+      onDragEnd: this.onTaskDragEnd,
+    });
+  }
+
 
   render() {
     const { projects } = this.state;
+    const { user } = this.props;
+
     return (
-      <div id="projects-main-container">
-        {/* Add Project Btn */}
-        <div className="add-project-btn">
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={() => this.callProjectModal()}
-          >
-            New project +
-          </button>
-        </div>
-        {/* Row of projects */}
-        <div className="mx-5">
-          <div className="row">
-            {/* Drag&Drop init */}
-            <DragDropContext
-              onDragStart={this.onTaskDragStart}
-              onDragEnd={this.onTaskDragEnd}
+      <>
+        <Header user={user}>
+          {/* Add Project Btn */}
+          <div className="nav-project-btns">
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={this.callReorderProjectsModal}
             >
-              {/* Droppable zone for projects */}
-              <Droppable
-                droppableId="projects"
-                direction="horizontal"
-                type="projects"
+              Reorder projects
+            </button>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={this.callProjectModal}
+            >
+              New project +
+            </button>
+          </div>
+        </Header>
+        <div id="projects-main-container">
+          {/* Row of projects */}
+          <div className="mx-5">
+            <div className="row">
+              {/* Drag&Drop init */}
+              <DragDropContext
+                onDragStart={this.onTaskDragStart}
+                onDragEnd={this.onTaskDragEnd}
               >
-                {providedDroppable => (
-                  <div
-                    className="d-flex flex-wrap w-100"
-                    ref={providedDroppable.innerRef}
-                    {...providedDroppable.droppableProps}
-                  >
-                    {/* Projects array */}
-                    {projects.sort((a, b) => a.order - b.order).map((project, index) => (
-                      // Draggable projects
-                      <Draggable
-                        key={project.id}
-                        draggableId={`project-${project.id}`}
-                        index={index}
-                      >
-                        {(providedDraggable, snapshotDraggable) => (
-                          <div
-                            className={`card card-body custom-w-20 custom-column-body ${snapshotDraggable.isDragging ? 'project-dragging' : ''}`}
-                            ref={providedDraggable.innerRef}
-                            {...providedDraggable.draggableProps}
-                            {...providedDraggable.dragHandleProps}
-                          >
-                            {/* Row title + toggle & popup window with Actions */}
-                            <ProjectPopUp
-                              projectId={project.id}
-                              projectTitle={project.title}
-                              actions={project.actions}
-                              handleProjectDestroy={this.handleProjectDestroy}
-                              handleActionDestroy={this.handleActionDestroy}
-                              handleProjectUpdate={this.handleProjectUpdate}
-                              validateInlineInputText={this.validateInlineInputText}
-                              handleActionCreate={this.handleActionCreate}
-                              handleActionUpdate={this.handleActionUpdate}
-                            />
-                            {/* Tasks */}
-                            <TasksContainer
-                              tasks={project.tasks}
-                              projectId={project.id}
-                              handleTaskUpdate={this.handleTaskUpdate}
-                              handleTaskCreate={this.handleTaskCreate}
-                              handleTaskDestroy={this.handleTaskDestroy}
-                              validateInlineInputText={this.validateInlineInputText}
-                            />
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
-                    {providedDroppable.placeholder}
-                  </div>
-                )}
-              </Droppable>
-            </DragDropContext>
+                <div className="d-flex flex-wrap w-100">
+                  {/* Projects array */}
+                  {projects.sort((a, b) => a.order - b.order).map(project => (
+                    <div className="card card-body custom-w-20 custom-column-body" key={project.id}>
+                      {/* Row title + toggle & popup window with Actions */}
+                      <ProjectPopUp
+                        projectId={project.id}
+                        projectTitle={project.title}
+                        actions={project.actions}
+                        handleProjectDestroy={this.handleProjectDestroy}
+                        handleActionDestroy={this.handleActionDestroy}
+                        handleProjectUpdate={this.handleProjectUpdate}
+                        validateInlineInputText={this.validateInlineInputText}
+                        handleActionCreate={this.handleActionCreate}
+                        handleActionUpdate={this.handleActionUpdate}
+                      />
+                      {/* Tasks */}
+                      <TasksContainer
+                        tasks={project.tasks}
+                        projectId={project.id}
+                        handleTaskUpdate={this.handleTaskUpdate}
+                        handleTaskCreate={this.handleTaskCreate}
+                        handleTaskDestroy={this.handleTaskDestroy}
+                        validateInlineInputText={this.validateInlineInputText}
+                      />
+                    </div>
+                  ))}
+                  {/* {providedDroppable.placeholder} */}
+                </div>
+              </DragDropContext>
+            </div>
           </div>
         </div>
-      </div>
+      </>
     );
   }
 }
 
 ProjectsContainer.propTypes = {
   projects: PropTypes.instanceOf(Array),
+  user: PropTypes.instanceOf(Object),
 };
 
 ProjectsContainer.defaultProps = {
   projects: [],
+  user: {},
 };
 
 export default ProjectsContainer;
