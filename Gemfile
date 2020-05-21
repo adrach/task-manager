@@ -18,7 +18,7 @@ gem 'rollbar' # rollbar
 gem 'devise'
 gem 'mini_racer', platforms: :ruby
 
-gem 'bootstrap', '~> 4.1.1'
+gem 'bootstrap', '~> 4.3.1'
 gem 'jquery-rails'
 
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
