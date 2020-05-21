@@ -14,4 +14,21 @@
  *= require_self
  */
 
- @import "bootstrap";
+@import "bootstrap";
+
+.modal-backdrop.show {
+  opacity: 0.7;
+}
+.modal.show.project-title,
+.modal.show.reorder-projects {
+  display: flex !important;
+  min-height: 80vh;
+  align-items: top;
+  justify-content: top;
+
+  .modal-dialog {
+    padding-top: 10%;
+    width: 550px;
+    max-width: 600px;
+  }
+}

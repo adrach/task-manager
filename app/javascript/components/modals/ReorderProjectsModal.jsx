@@ -44,7 +44,7 @@ class ReorderProjectsModal extends React.Component {
 
     return (
       <div
-        className="modal fade"
+        className="modal fade reorder-projects"
         id="reorderProjectsModal"
         tabIndex="-1"
         role="dialog"

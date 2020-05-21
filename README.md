@@ -1,5 +1,5 @@
 # [Task Manager]
-# Forked off the [Starter Full-Stack Project: Postgres + Rails + React (PRR)] (https://github.com/adrach/starter-postgres-rails-react).
+Forked off the [Starter Full-Stack Project: Postgres + Rails + React (PRR)](https://github.com/adrach/starter-postgres-rails-react)
 
 ## Overview
 
@@ -17,8 +17,12 @@ Project/
   config/
   db/
   lib/
+  log/
   public/
+  spec/
+  storage/
   test/
+  tmp/
   vendor/
   Gemfile
   package.json
@@ -29,10 +33,10 @@ Project/
 
 ## Prerequisites
 Before installing, please make sure to have global installations of
-* [node v8 or higher](https://nodejs.org/en/download/)
+* [node v10 or higher](https://nodejs.org/en/download/)
 * npm v6 or higher
 * [PostgreSQL](https://www.postgresql.org/download/) (if running a local DB instance)
-* [Ruby On Rails](https://rubyonrails.org/) (ruby@2.5.3 & rails@5.2.2)
+* [Ruby On Rails](https://rubyonrails.org/) (ruby@2.6.4 & rails@6.0.0)
 
 ## Installation
 1. Execute `bundle install && npm install` to configure the local environment.
@@ -57,51 +61,3 @@ This application uses npm and rails scripts for testing, development, and deploy
 * `$ rails db:seed`: perform DB seeding
 * `$ rubocop`: perform linting of the BE code
 * `$ npm run lint`: perform linting of the FE code
-
-## BE Endpoints
-
-### `POST /posts`: Create a New Post
-This endpoint creates a new record. An example of the payload (input data) is provided below:
-```
-body: {
-    author : String,    /* required */
-    content: Text,      /* required */
-    title  : String     /* required */
-    }
-```
-The output echos back the provided data with the system-generated record ID:
-```
-let response = {
-    statusCode: 200,
-    body: {
-        id     : Number,    /* required */
-        author : String,    /* required */
-        content: Text,      /* required */
-        title  : String     /* required */
-    }
-```
-
-### `GET /posts`: Get all Posts
-This endpoint returns the complete set of available Posts. No input data is required
-The output is provided in array with each object having the structure described above:
-```
-let response = {
-    statusCode: 200,
-    body: [
-            Post1,
-            Post2,
-            ...
-            PostN
-        ]
-    }
-```
-
-### `GET /posts/:id`: Get a Post by ID
-This endpoint returns an individual Post by ID. The ID is provided as a URI parameter.
-The output is the same as from `POST /posts`
-
-### `PUT /posts/:id`: Update a Post by ID
-This endpoint updates an existing Post by ID. The input/output formats are the same as in `POST /posts`
-
-### `DELETE /posts/:id`: Delete a Post by ID
-This endpoint deletes an individual Post by ID. The ID is provided as a URI parameter.

@@ -20,6 +20,7 @@ class Header extends React.Component {
 
     return (
       <nav className="navbar navbar-expand-lg navbar-dark">
+        <i className="icon app-logo-black" />
         <a className="navbar-brand" href="#">Task Manager</a>
         <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span className="navbar-toggler-icon" />

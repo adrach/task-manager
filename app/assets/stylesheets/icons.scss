@@ -2,6 +2,14 @@
   display: flex;
   background-repeat: no-repeat;
 
+  &.app-logo-black {
+    background-image: image_url('/logo-black.svg');
+    width: 3.75rem;
+    height: 3.5rem;
+    background-size: 3.0rem;
+    background-position-y: center;
+    background-position-x: left;
+  }
   &.icon-edit-links {
     background-image: image_url('edit.svg');
     width: 1rem;

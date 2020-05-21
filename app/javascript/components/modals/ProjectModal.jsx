@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 const ProjectModal = ({ handleSubmit, handleReject }) => (
   <div
-    className="modal fade"
+    className="modal fade project-title"
     id="projectModal"
     tabIndex="-1"
     role="dialog"
