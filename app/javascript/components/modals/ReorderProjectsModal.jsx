@@ -25,9 +25,7 @@ class ReorderProjectsModal extends React.Component {
     ) return;
 
     const parsedDraggableId = parseInt(draggableId.split('-').pop(), 10);
-    const sortedProjects = projects.sort((a, b) => a.order - b.order);
-
-    const newProjectIds = Array.from(sortedProjects.map(p => p.id));
+    const newProjectIds = projects.sort((a, b) => a.order - b.order).map(p => p.id);
     newProjectIds.splice(source.index, 1);
     newProjectIds.splice(destination.index, 0, parsedDraggableId);
 

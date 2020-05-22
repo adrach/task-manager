@@ -3,7 +3,7 @@ class Api::ProjectController < Api::BaseController
   before_action :set_reorder_data, only: [:update_order]
 
   def index
-    @projects = Project.all.includes(:tasks).includes(:actions)
+    @projects = current_user.projects.includes(:tasks, :actions)
     respond_with(@projects)
   end
 
@@ -23,7 +23,7 @@ class Api::ProjectController < Api::BaseController
   end
 
   def update_order
-    Project.includes(:user).find(@ids).each do |project|
+    current_user.projects.find(@ids).each do |project|
       project.order = @ids.index(project.id)
       project.save!
     end
@@ -37,7 +37,7 @@ class Api::ProjectController < Api::BaseController
   end
 
   def set_project
-    @project = Project.find_by_id(params[:id])
+    @project = current_user.projects.find_by_id(params[:id])
   end
 
   def set_reorder_data

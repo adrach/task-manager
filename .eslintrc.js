@@ -28,7 +28,6 @@ module.exports = {
     "jsx-a11y/no-static-element-interactions": 0,
     "no-unused-expressions": 0,
     "react/jsx-boolean-value": 0,
-    "jsx-a11y/anchor-is-valid": 0,
-    "no-confusing-arrow": 0
+    "jsx-a11y/anchor-is-valid": 0
   }
 };

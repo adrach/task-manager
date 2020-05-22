@@ -2,7 +2,7 @@ class Api::ActionController < Api::BaseController
   before_action :set_action, only: [:update, :destroy]
 
   def create
-    @action = Action.create(action_params)
+    @action = current_user.actions.create(action_params)
     render json: @action
   end
 
@@ -23,6 +23,6 @@ class Api::ActionController < Api::BaseController
   end
 
   def set_action
-    @action = Action.find_by_id(params[:id])
+    @action = current_user.actions.find_by_id(params[:id])
   end
 end

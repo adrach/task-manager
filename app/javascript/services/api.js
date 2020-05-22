@@ -7,7 +7,7 @@ const apiFetch = (url, method, body) => (
       'Content-Type': 'application/json',
       'X-CSRF-Token': document.querySelector('meta[name=csrf-token]').content,
     },
-  }).then(res => url.includes('users/') ? res : res.json())
+  }).then(res => (url.includes('users/') ? res : res.json()))
 );
 
 const get = url => apiFetch(url, 'GET');

@@ -26,12 +26,17 @@ class User < ApplicationRecord
   default_scope -> { kept }
 
   after_discard do
-    posts.discard_all
+    projects.discard_all
+    tasks.discard_all
+    actions.discard_all
   end
   after_undiscard do
-    posts.with_discarded.discarded.undiscard_all
+    projects.with_discarded.discarded.undiscard_all
+    tasks.with_discarded.discarded.undiscard_all
+    actions.with_discarded.discarded.undiscard_all
   end
 
-  has_many :posts, dependent: :destroy
   has_many :projects, dependent: :destroy
+  has_many :tasks, dependent: :destroy
+  has_many :actions, dependent: :destroy
 end

@@ -3,8 +3,8 @@ class Api::TaskController < Api::BaseController
   before_action :set_reorder_data, only: [:update_order, :update_backlog_status]
 
   def create
-    order = Project.find_by_id(params[:project_id]).tasks.where(is_backlog: false).count
-    @task = Task.new(task_params)
+    order = current_user.projects.find_by_id(params[:project_id]).tasks.where(is_backlog: false).count
+    @task = current_user.tasks.new(task_params)
     @task.order = order
     @task.save!
     render json: @task
@@ -21,7 +21,7 @@ class Api::TaskController < Api::BaseController
   end
 
   def update_order
-    Task.find(@ids).each do |task|
+    current_user.tasks.includes(:project).find(@ids).each do |task|
       task.order = @ids.index(task.id)
       task.is_backlog = @item['is_backlog'] if task.id == @item['id']
       task.save!
@@ -30,7 +30,7 @@ class Api::TaskController < Api::BaseController
   end
 
   def update_backlog_status
-    Task.find(@ids).each do |task|
+    current_user.tasks.includes(:project).find(@ids).each do |task|
       task.is_backlog = @is_backlog
       task.save!
     end
@@ -44,7 +44,7 @@ class Api::TaskController < Api::BaseController
   end
 
   def set_task
-    @task = Task.find_by_id(params[:id])
+    @task = current_user.tasks.find_by_id(params[:id])
   end
 
   def set_reorder_data
